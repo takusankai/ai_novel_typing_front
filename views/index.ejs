@@ -245,6 +245,7 @@
         // タイマーを停止
         clearInterval(timerId)
 
+        // 判定結果を表示するボックスを取得
         const boxCheckResult = document.querySelector("#box-check-result")
         const templateCheckResult = document.querySelector("#template-check-result")
         const cloneCheckResult = document.importNode(templateCheckResult.content, true)
@@ -346,6 +347,7 @@
           printCorrectSentenceRomaji.innerHTML = sentenceRomaji.slice(0, correctInputLen)
           printFailureSentenceRomaji.innerHTML = sentenceRomaji.slice(correctInputLen, sentenceRomajiSize)
 
+          // 出題文章を全て正しく入力した場合は、次の文章を出題
           if(sentenceRomajiSize == correctInputLen){
             updateUncompletedIndex()
             updateProbSentence()
@@ -369,10 +371,11 @@
     // 経過時間を計算する関数
     function calculateElapsedTime(startTime){
       
-      // 経過時間を設定
+      // 経過時間を算出
       const milliseconds = performance.now() - startTime
       const printElapsedTime = convertMillisecondsToTime(milliseconds)
 
+      // 経過時間をボックスに挿入
       const boxTimeAndInputCount = document.querySelector("#box-time-and-input-count")
       const templateTimer = boxTimeAndInputCount.querySelector(".template-timer")
       const nowTimer = templateTimer.querySelector("#nowTime")
@@ -415,7 +418,11 @@
 
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
-      
+      /* 
+        localhost3000にアクセスしたときに実行される
+        何も記載していないので現状ではアクセスしただけだと何も表示されない
+        (htmlの<header><main>のみロードされる)
+      */
     })
 
     // キーボード入力したときに実行
