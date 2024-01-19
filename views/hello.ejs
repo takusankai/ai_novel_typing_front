@@ -31,8 +31,6 @@
     <!-- 経過時間,タイピングの正入力回数,誤入力回数を挿入 -->
     <div id="box-time-and-input-count"></div>
 
-    <div id="box-timer"></div>
-
     <!-- 出題文章を挿入 -->
     <div id="box-prob-sentence"></div>
 
@@ -263,7 +261,6 @@
 
         // 経過時間を挿入
         const elapsed = cloneCheckResult.querySelector(".elapsed")
-        const boxTimer = document.querySelector("#box-timer")
         elapsed.innerHTML = calculateFinishedTime(startTime)
 
         // テンプレートから複製したクローンをボックスに挿入
@@ -380,17 +377,6 @@
       const templateTimer = boxTimeAndInputCount.querySelector(".template-timer")
       const nowTimer = templateTimer.querySelector("#nowTime")
       nowTimer.innerHTML = printElapsedTime
-
-      // 経過時間を挿入したクローンをボックスに挿入
-      /*
-      const boxTimer = document.querySelector("#box-timer")
-      const templateTimer = document.querySelector("#template-timer")
-      const cloneTimer = document.importNode(templateTimer.content, true)
-      const nowTimer = cloneTimer.getElementById("nowTime")
-      nowTimer.innerHTML = printElapsedTime
-      boxTimer.innerHTML = ""
-      boxTimer.appendChild(cloneTimer)
-      */
 
       // スコア判定に用いる「ミリ秒」表記の経過時間を設定
       elapsedTime = milliseconds / 1000
