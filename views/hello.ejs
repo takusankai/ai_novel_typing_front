@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Game</title>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.2/dist/semantic.min.css">
+  <style>
+    .background {
+      background-color: #f3deb9;
+    }
+  </style>
+</head>
+<body class="background">
+  <header class="ui text container">
+    <h1 class="ui center aligned header">
+      <em data-emoji=":alien:" class="small"></em>
+      <div class="content">
+        Typing Game
+        <div class="sub header">AI型タイピングゲーム</div>
+      </div>
+      <em data-emoji=":boar:" class="small"></em>
+    </h1>
+    <div class="ui hidden divider"></div>
+  </header>
+
+  <!-- 画面に表示するコンポーネント -->
+  <main>
+
+    <!-- 経過時間,タイピングの正入力回数,誤入力回数を挿入 -->
+    <div id="box-time-and-input-count"></div>
+
+    <div id="box-timer"></div>
+
+    <!-- 出題文章を挿入 -->
+    <div id="box-prob-sentence"></div>
+
+    <!-- タイピング結果を挿入 -->
+    <div id="box-check-result"></div>
+
+    <!-- スコア判定の指標(B ~ S ランクを取得するための要件一覧)を挿入 -->
+    <div id="box-score-example"></div>
+
+  </main>
+
+  <template id="template-time-and-input-count">
+    <div class="ui four column doubling stackable grid container">
+      <div class="column">
+        <div class="template-typing-count">
+          <a class="ui olive image label">
+            <em data-emoji=":angel:" class="medium"></em>
+            正入力数
+            <div class="detail">
+              <span class="ui white text" id="correct-count">0<!-- 正入力数を挿入 --></span>
+            </div>
+          </a>
+          <a class="ui orenge image label">
+            <em data-emoji=":bat:" class="medium"></em>
+            誤入力数
+            <div class="detail">
+              <span class="ui red text" id="failure-count">0<!-- 誤入力数を挿入 --></span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="column">
+        <div class="template-timer">
+          <div class="ui label">
+            <em data-emoji=":clock:" class="medium">
+              <span class="ui teal text" id="nowTime"><!-- 経過時間を挿入 --></span>
+            </em>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui hidden divider"></div>
+  </template>
+
+  <!-- box-prob-sentence と対応 -->
+  <template id="template-prob-sentence">
+    <div class="ui container">
+      <!-- 出題文章(日本語)を挿入 -->
+      <span class="ui big green text" id="jpComplete"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui big text" id="jpUnComplete"><!-- タイピングしてない文字を挿入 --></span>
+      <div class="ui divider"></div>
+      <!-- 出題文章(ローマ字)を挿入 -->
+      <span class="ui green text" id="romajiComplete"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui text" id="romajiUnComplete"><!-- タイピングしてない文字を挿入 --></span>
+    </div>
+    <div class="ui hidden divider"></div>
+  </template>
+
+  <!-- box-check-result と対応 -->
+  <template id="template-check-result">
+    <div class="ui container">
+      <h2 class="ui header">
+        <i class="hand point right outline icon"></i>
+        <div class="content">
+          判定結果 : 
+          <span class="total-result">
+            <!-- B ~ S ランクを挿入 -->
+          </span>
+        </div>
+      </h2>
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>正解数</th>
+            <th>不正解</th>
+            <th>経過時間</th>
+          </tr>
+          <tbody>
+            <tr class="check-result-detail">
+              <td class="correct"><!-- 正解数を挿入 --></td>
+              <td class="failure"><!-- 不正解数を挿入 --></td>
+              <td class="elapsed"><!-- 経過時間を挿入 --></td>
+            </tr>
+          </tbody>
+        </thead>
+      </table>
+    </div>
+    <div class="ui hidden divider"></div>
+  </template>
+
+  <!-- スコア判定の指標 -->
+  <template id="template-score-example">
+    <div class="ui container">
+      <h2 class="ui header">
+        <i class="hand point right outline icon"></i>
+        <div class="content">
+          ランク要件 
+        </div>
+      </h2>
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>ランク名</th>
+            <th>不正解数</th>
+            <th>経過時間</th>
+          </tr>
+          <tbody>
+            <tr class="check-result-detail">
+              <td class="rank"><!-- ランクを挿入 --></td>
+              <td class="failure"><!-- 不正解数を挿入 --></td>
+              <td class="elapsed"><!-- 経過時間を挿入 --></td>
+            </tr>
+          </tbody>
+        </thead>
+      </table>
+    </div>
+    <div class="ui hidden divider"></div>
+  </template>
+
+  <script>
+
+    // 現状では決め打ち。ChatGPTで生成した文章をこのリストに格納する
+    const probList = [
+      {jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
+      {jp: "ワンピース速報", romaji: "ONEPIECESOKUHOU"}, 
+    ]
+
+    /*
+      probListと対応。
+      出題した文章にはtrue, 出題してない文章にはfalseを設定。
+      初期値はfalse
+    */
+    const completedList = [
+      false, 
+      false
+    ]
+
+    // 全出題文章の合計文字数を設定。スコア判定に使用。
+    const totalSentencesLength = calculateTotalSentencesLength()
+    console.log(Math.floor(totalSentencesLength*0.3))
+
+    // スコア判定の指標
+    const scoreList = [
+      {missingTypingCount: Math.floor(totalSentencesLength - (totalSentencesLength * 0.95)), elapsedTime: totalSentencesLength*0.3, score: "S"},
+      {missingTypingCount: Math.floor(totalSentencesLength - (totalSentencesLength * 0.75)), elapsedTime: totalSentencesLength*0.5, score: "A"},
+    ]
+
+    // 正しくタイピングした回数とタイピングミスした回数を設定
+    let correctTypingCount = 0
+    let missingTypingCount = 0
+
+    // checkInput関数で使用。タイピング済の文字を識別する。
+    let correctInputLen = 0
+
+    // 経過時間を設定
+    let elapsedTime = 0
+
+    // タイピングゲームが開始したか判定
+    let isStartGame = false
+
+    // カウントアップタイマーの実装
+    var timerId = 0
+    var startTime = 0
+
+/*--------------- ↓ 関数 ↓ ---------------*/
+
+    // 全出題文章の合計文字数を return する関数
+    function calculateTotalSentencesLength(){
+      let sentencesSize = 0
+      probList.forEach(prob => {
+        sentencesSize += prob.romaji.length
+      })
+      return sentencesSize
+    }
+
+    // タイピングゲームのUI画面を構成する
+    function createTypingScreen(){
+      updateProbSentence()
+      generateBoxTypingCount()
+    }
+
+    // 出題文章を表示する画面を作成する関数。 box-prob-sentence と対応。
+    function updateProbSentence(){
+
+      // 出題文章を表示するボックスを取得
+      const boxProbSentence = document.querySelector("#box-prob-sentence")
+
+      // 出題する文章を取得
+      const uncompletedIndex = getUncompletedIndex()
+
+      // 出題する文章が残っている場合
+      if(uncompletedIndex != -1){
+        const templateProbSentence = document.querySelector("#template-prob-sentence")
+        const cloneProbSentence = document.importNode(templateProbSentence.content, true)
+        
+        // 出題文章(日本語)を挿入
+        const spanJp = cloneProbSentence.getElementById("jpUnComplete")
+        spanJp.innerHTML = probList[uncompletedIndex].jp
+
+        // 出題文章(ローマ字)を挿入
+        const spanRomaji = cloneProbSentence.getElementById("romajiUnComplete")
+        spanRomaji.innerHTML = probList[uncompletedIndex].romaji
+
+        // テンプレートから複製したクローンをボックスに挿入
+        boxProbSentence.innerHTML = ""
+        boxProbSentence.appendChild(cloneProbSentence)
+      }
+      
+      // 全ての文章を出題 or 出題する文章が無い場合
+      else{
+
+        // タイマーを停止
+        clearInterval(timerId)
+
+        const boxCheckResult = document.querySelector("#box-check-result")
+        const templateCheckResult = document.querySelector("#template-check-result")
+        const cloneCheckResult = document.importNode(templateCheckResult.content, true)
+
+        // スコアを挿入
+        const totalResult = cloneCheckResult.querySelector(".total-result")
+        totalResult.innerHTML = checkScore()
+
+        // 正解数と不正解数を挿入
+        const correct = cloneCheckResult.querySelector(".correct")
+        const failure = cloneCheckResult.querySelector(".failure")
+        correct.innerHTML = correctTypingCount
+        failure.innerHTML = missingTypingCount
+
+        // 経過時間を挿入
+        const elapsed = cloneCheckResult.querySelector(".elapsed")
+        const boxTimer = document.querySelector("#box-timer")
+        elapsed.innerHTML = calculateFinishedTime(startTime)
+
+        // テンプレートから複製したクローンをボックスに挿入
+        boxCheckResult.innerHTML = ""
+        boxCheckResult.appendChild(cloneCheckResult)
+      }
+      
+    }
+
+    // タイピングの正入力回数と誤入力回数を表示する画面を作成する関数。 box-typing-count と対応。
+    function generateBoxTypingCount(){
+      const boxTimeAndInputCount = document.querySelector("#box-time-and-input-count")
+      const templateTimeAndInputCount = document.querySelector("#template-time-and-input-count")
+      const cloneTimeAndInputCount = document.importNode(templateTimeAndInputCount.content, true)
+      boxTimeAndInputCount.innerHTML = ""
+      boxTimeAndInputCount.appendChild(cloneTimeAndInputCount)
+    }
+
+    // 出題してない文章を return する関数
+    function getUncompletedIndex() {
+      for (const [index, element] of completedList.entries()) {
+        if (!element) {
+          return index
+        }
+      }
+      return -1;
+    }
+
+    // 出題した文章の status を true に変更する関数
+    function updateUncompletedIndex() {
+      for (const [index, element] of completedList.entries()) {
+        if (!element) {
+          completedList[index] = true
+          break
+        }
+      }
+    }
+
+    // スコア判定する関数
+    function checkScore() {
+      for (const scoreElement of scoreList) {
+        if (missingTypingCount <= scoreElement.missingTypingCount && elapsedTime <= scoreElement.elapsedTime) {
+          return scoreElement.score;
+        }
+      }
+      return 'B';
+    }
+
+    // 正しく入力した文字と誤入力した文字を集計し、文字色を変える関数。
+    function checkInput(userInputSentence) {
+
+      // 出題文章を取得
+      const uncompletedIndex = getUncompletedIndex()
+
+      if(uncompletedIndex != -1){
+        const sentenceJp = probList[uncompletedIndex].jp
+        const sentenceRomaji = probList[uncompletedIndex].romaji
+
+        console.log("入力文字 : " + userInputSentence)
+
+        // 正しく入力したか判定
+        if(userInputSentence.toUpperCase() === sentenceRomaji[correctInputLen]){
+          
+          // 正しくタイピングした回数を更新
+          correctTypingCount += 1
+
+          // 正しく入力された文字数を更新
+          correctInputLen += 1
+
+          // 画面に表示している正入力回数を更新
+          const boxTimeAndInputCount = document.querySelector("#box-time-and-input-count")
+          const templateTypingCount = boxTimeAndInputCount.querySelector(".template-typing-count")
+          const correctCount = templateTypingCount.querySelector("#correct-count")
+          correctCount.innerHTML = correctTypingCount
+
+          // 画面に表示している文章を取得
+          const boxProbSentence = document.querySelector("#box-prob-sentence")
+          const printCorrectSentenceRomaji = boxProbSentence.querySelector("#romajiComplete")
+          const printFailureSentenceRomaji = boxProbSentence.querySelector("#romajiUnComplete")
+          
+          // 正しく入力された文字は緑色の文字にして再表示
+          const sentenceRomajiSize = sentenceRomaji.length
+          printCorrectSentenceRomaji.innerHTML = sentenceRomaji.slice(0, correctInputLen)
+          printFailureSentenceRomaji.innerHTML = sentenceRomaji.slice(correctInputLen, sentenceRomajiSize)
+
+          if(sentenceRomajiSize == correctInputLen){
+            updateUncompletedIndex()
+            updateProbSentence()
+            correctInputLen = 0
+          }
+
+        // タイピングミスした場合
+        }else{
+          // 誤入力回数を更新
+          missingTypingCount += 1
+
+          // 画面に表示している誤入力回数を更新
+          const boxTimeAndInputCount = document.querySelector("#box-time-and-input-count")
+          const templateTypingCount = boxTimeAndInputCount.querySelector(".template-typing-count")
+          const failureCount = templateTypingCount.querySelector("#failure-count")
+          failureCount.innerHTML = missingTypingCount
+        }
+      }
+    }
+
+    // 経過時間を計算する関数
+    function calculateElapsedTime(startTime){
+      
+      // 経過時間を設定
+      const milliseconds = performance.now() - startTime
+      const printElapsedTime = convertMillisecondsToTime(milliseconds)
+
+      const boxTimeAndInputCount = document.querySelector("#box-time-and-input-count")
+      const templateTimer = boxTimeAndInputCount.querySelector(".template-timer")
+      const nowTimer = templateTimer.querySelector("#nowTime")
+      nowTimer.innerHTML = printElapsedTime
+
+      // 経過時間を挿入したクローンをボックスに挿入
+      /*
+      const boxTimer = document.querySelector("#box-timer")
+      const templateTimer = document.querySelector("#template-timer")
+      const cloneTimer = document.importNode(templateTimer.content, true)
+      const nowTimer = cloneTimer.getElementById("nowTime")
+      nowTimer.innerHTML = printElapsedTime
+      boxTimer.innerHTML = ""
+      boxTimer.appendChild(cloneTimer)
+      */
+
+      // スコア判定に用いる「ミリ秒」表記の経過時間を設定
+      elapsedTime = milliseconds / 1000
+
+      return printElapsedTime
+    }
+
+    // ミリ秒 → 〇時間〇分〇秒 に変換する関数
+    function convertMillisecondsToTime(milliseconds) {
+      // 1秒 = 1000ミリ秒, 1分 = 60秒, 1時間 = 60分
+      var hours = Math.floor(milliseconds / (1000 * 60 * 60))
+      var minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60))
+      var seconds = Math.floor((milliseconds % (1000 * 60)) / 1000)
+
+      return hours + '時間 ' + minutes + '分 ' + seconds + '秒'
+    }
+
+    // 終了時間を計算する関数
+    function calculateFinishedTime(startTime){
+      // 経過時間を設定
+      const endTime = performance.now()
+      const milliseconds = endTime - startTime
+      return convertMillisecondsToMilliTime(milliseconds)
+    }
+
+    // ミリ秒 → 〇時間〇分〇秒〇ミリ秒 に変換する関数
+    function convertMillisecondsToMilliTime(milliseconds) {
+      // 1秒 = 1000ミリ秒, 1分 = 60秒, 1時間 = 60分
+      var hours = Math.floor(milliseconds / (1000 * 60 * 60))
+      var minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60))
+      var seconds = Math.floor((milliseconds % (1000 * 60)) / 1000)
+      var remainingMilliseconds = Math.floor(milliseconds % 1000)
+
+      return hours + '時間 ' + minutes + '分 ' + seconds + '秒 ' + remainingMilliseconds + 'ミリ秒'
+    }
+
+    // ページをロードしたときに実行
+    document.addEventListener("DOMContentLoaded", () => {
+      
+    })
+
+    // キーボード入力したときに実行
+    document.addEventListener("keydown", (event) =>{
+      var key = event.code
+      if(key){
+        // Enter が入力されたらゲーム開始
+        if(key == "Enter" && !isStartGame){
+          createTypingScreen()
+          startTime = performance.now()
+          timerId = setInterval(() => calculateElapsedTime(startTime), 10);
+        }
+        // ゲームが既に開始しておりユーザーがタイピングしている状態なのでタイピング判定する
+        else{
+          checkInput(event.code[event.code.length-1])
+        }
+      }
+    })
+  </script>
+</body>
+</html>
