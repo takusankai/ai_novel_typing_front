@@ -138,7 +138,7 @@
             <th>経過時間</th>
           </tr>
           <tbody>
-            <tr class="check-result-detail">
+            <tr class="check-score-result-detail">
               <td class="rank"><!-- ランクを挿入 --></td>
               <td class="failure"><!-- 不正解数を挿入 --></td>
               <td class="elapsed"><!-- 経過時間を挿入 --></td>
@@ -366,6 +366,21 @@
           failureCount.innerHTML = missingTypingCount
         }
       }
+    }
+
+    // タイピングミスしたときに効果音を鳴らす関数
+    function generateMissTypingSound(){
+
+    }
+
+    // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
+    function generateCorrectSound(){
+
+    }
+
+    // タイピングゲーム終了時に効果音を鳴らす関数
+    function generateFinishSound(){
+
     }
 
     // 経過時間を計算する関数
