@@ -340,6 +340,10 @@
     var timerId = 0
     var startTime = 0
 
+    // 選択肢の選択状態を設定
+    var isSelect1 = false
+    var isSelect2 = false
+
 /*--------------- ↓ 関数 ↓ ---------------*/
 
     // 全出題文章の合計文字数を return する関数
@@ -447,6 +451,20 @@
     // 正しく入力した文字と誤入力した文字を集計し、文字色を変える関数。
     function checkInput(userInputSentence) {
 
+      if(isSelect1){
+        checkInputSelect1(userInputSentence)
+      }
+
+      else{
+        checkInputSelect2(userInputSentence)
+      }
+
+      
+    }
+
+    // 選択肢 1 に対応する checkInput
+    function checkInputSelect1(userInputSentence){
+
       // 出題文章を取得
       const uncompletedIndex = getUncompletedIndex()
 
@@ -509,9 +527,68 @@
       }
     }
 
-    // 選択肢1に対応する checkInput
-    function checkInputSelect1(){
+    // 選択肢 2 に対応する checkInput
+    function checkInputSelect2(userInputSentence){
+      // 出題文章を取得
+      const uncompletedIndex = getUncompletedIndex()
 
+      if(uncompletedIndex != -1){
+        const sentenceJp = probList2[uncompletedIndex].jp
+        const sentenceRomaji = probList2[uncompletedIndex].romaji
+
+        console.log("入力文字 : " + userInputSentence)
+
+        // 正しく入力したか判定
+        if(userInputSentence.toUpperCase() === sentenceRomaji[correctInputLen]){
+          
+          // 正しくタイピングした回数を更新
+          correctTypingCount += 1
+
+          // 正しく入力された文字数を更新
+          correctInputLen += 1
+
+          // 画面に表示している正入力回数を更新
+          const boxTimeAndInputCount = document.querySelector("#box-time-and-input-count")
+          const templateTypingCount = boxTimeAndInputCount.querySelector(".template-typing-count")
+          const correctCount = templateTypingCount.querySelector("#correct-count")
+          correctCount.innerHTML = correctTypingCount
+
+          // 画面に表示している文章を取得
+          const boxProbSentence = document.querySelector("#box-prob-sentence")
+          const printCorrectSentenceRomaji = boxProbSentence.querySelector("#romajiComplete2")
+          const printFailureSentenceRomaji = boxProbSentence.querySelector("#romajiUnComplete2")
+          
+          // 正しく入力された文字は緑色の文字にして再表示
+          const sentenceRomajiSize = sentenceRomaji.length
+          printCorrectSentenceRomaji.innerHTML = sentenceRomaji.slice(0, correctInputLen)
+          printFailureSentenceRomaji.innerHTML = sentenceRomaji.slice(correctInputLen, sentenceRomajiSize)
+
+          // 出題文章を全て正しく入力した場合は、正解の効果音を鳴らして次の文章を出題
+          if(sentenceRomajiSize == correctInputLen){
+            isSelect1 = false
+            isSelect2 = false
+            generateCorrectSound()
+            updateUncompletedIndex()
+            updateProbSentence()
+            correctInputLen = 0
+          }
+        }
+        
+        // タイピングミスした場合
+        else{
+          // 効果音を鳴らす
+          generateMissTypingSound()
+
+          // 誤入力回数を更新
+          missingTypingCount += 1
+
+          // 画面に表示している誤入力回数を更新
+          const boxTimeAndInputCount = document.querySelector("#box-time-and-input-count")
+          const templateTypingCount = boxTimeAndInputCount.querySelector(".template-typing-count")
+          const failureCount = templateTypingCount.querySelector("#failure-count")
+          failureCount.innerHTML = missingTypingCount
+        }
+      }
     }
 
     // タイピングゲームが終了したときに実行される関数
@@ -700,8 +777,6 @@
       boxSounds.appendChild(cloneSounds)
     })
 
-    var isSelect1 = false
-    var isSelect2 = false
     // キーボード入力したときに実行
     document.addEventListener("keydown", (event) =>{
       var key = event.key
