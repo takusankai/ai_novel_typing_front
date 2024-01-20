@@ -43,6 +43,10 @@
     <!-- 起動時の画面を挿入 -->
     <div id="box-starting-page"></div>
 
+    <audio id="btn_audio" loop>
+      <source src="jingle_14.mp3" type="audio/mp3">
+    </audio>
+
   </main>
 
   <template id="template-time-and-input-count">
@@ -338,6 +342,8 @@
         // テンプレートから複製したクローンをボックスに挿入
         boxCheckResult.innerHTML = ""
         boxCheckResult.appendChild(cloneCheckResult)
+
+
       }
       
     }
@@ -427,6 +433,9 @@
 
         // タイピングミスした場合
         }else{
+          // 効果音を鳴らす
+          generateMissTypingSound()
+
           // 誤入力回数を更新
           missingTypingCount += 1
 
@@ -441,8 +450,8 @@
 
     // タイピングミスしたときに効果音を鳴らす関数
     function generateMissTypingSound(){
-      const templateSounds = document.querySelector("#template-sounds")
-      //const missTypingSound = templateSounds
+      document.getElementById('btn_audio').currentTime = 0; //連続クリックに対応
+      document.getElementById('btn_audio').play(); //クリックしたら音を再生
     }
 
     // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
@@ -528,6 +537,7 @@
 
     // スタート画面にてボタンを押したときに実行
     $(document).on("click", ".ui.button", function(){
+      generateMissTypingSound()
       createTypingScreen()
       startTime = performance.now()
       timerId = setInterval(() => calculateElapsedTime(startTime), 10);
