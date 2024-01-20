@@ -152,7 +152,7 @@
     </div>
     <div class="ui hidden divider"></div>
   </template>
-
+  
   <!-- 起動時の画面と対応 -->
   <template id="template-starting-page">
     <div class="ui hidden divider"></div>
@@ -441,7 +441,8 @@
 
     // タイピングミスしたときに効果音を鳴らす関数
     function generateMissTypingSound(){
-
+      const templateSounds = document.querySelector("#template-sounds")
+      //const missTypingSound = templateSounds
     }
 
     // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
@@ -450,8 +451,8 @@
     }
 
     // タイピングゲーム終了時に効果音を鳴らす関数
-    function generateFinishSound(){
-
+    function generateFinishSound() {
+      
     }
 
     // 経過時間を計算する関数
@@ -521,7 +522,7 @@
       var key = event.code
       if(key){
         // ユーザーがタイピングしている状態なのでタイピング判定する
-          checkInput(event.code[event.code.length-1])
+        checkInput(event.code[event.code.length-1])
       }
     })
 
