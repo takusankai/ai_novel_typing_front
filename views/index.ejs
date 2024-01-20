@@ -92,12 +92,24 @@
   <template id="template-prob-sentence">
     <div class="ui container">
       <!-- 出題文章(日本語)を挿入 -->
-      <span class="ui big green text" id="jpComplete"><!-- タイピング済の文字を挿入 --></span>
-      <span class="ui big text" id="jpUnComplete"><!-- タイピングしてない文字を挿入 --></span>
+      <span class="ui big green text" id="jpComplete1"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui big text" id="jpUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
       <div class="ui divider"></div>
       <!-- 出題文章(ローマ字)を挿入 -->
-      <span class="ui green text" id="romajiComplete"><!-- タイピング済の文字を挿入 --></span>
-      <span class="ui text" id="romajiUnComplete"><!-- タイピングしてない文字を挿入 --></span>
+      <span class="ui green text" id="romajiComplete1"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui text" id="romajiUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
+      
+      <div class="ui horizontal divider">
+        Or
+      </div>
+      
+      <!-- 出題文章(日本語)を挿入 -->
+      <span class="ui big green text" id="jpComplete2"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui big text" id="jpUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
+      <div class="ui divider"></div>
+      <!-- 出題文章(ローマ字)を挿入 -->
+      <span class="ui green text" id="romajiComplete2"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui text" id="romajiUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
     </div>
     <div class="ui hidden divider"></div>
   </template>
@@ -272,17 +284,27 @@
   <script>
 
     // 現状では決め打ち。ChatGPTで生成した文章をこのリストに格納する
-    const probList = [
+    const probList1 = [
       {jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
       {jp: "ワンピース速報", romaji: "ONEPIECESOKUHOU"}, 
     ]
 
+    const probList2 = [
+      {jp: "昨日お腹壊しました", romaji: "KINOUONAKAKOWASIMASITA"}, 
+      {jp: "トイレにこもって戦いました", romaji: "TOIRENIKOMOTTETATAKAIMASITA"}, 
+    ]
+
     /*
-      probListと対応。
+      probList1と対応。
       出題した文章にはtrue, 出題してない文章にはfalseを設定。
       初期値はfalse
     */
-    const completedList = [
+    const completedList1 = [
+      false, 
+      false
+    ]
+
+    const completedList2 = [
       false, 
       false
     ]
@@ -319,7 +341,7 @@
     // 全出題文章の合計文字数を return する関数
     function calculateTotalSentencesLength(){
       let sentencesSize = 0
-      probList.forEach(prob => {
+      probList1.forEach(prob => {
         sentencesSize += prob.romaji.length
       })
       return sentencesSize
@@ -354,12 +376,18 @@
         const cloneProbSentence = document.importNode(templateProbSentence.content, true)
         
         // 出題文章(日本語)を挿入
-        const spanJp = cloneProbSentence.getElementById("jpUnComplete")
-        spanJp.innerHTML = probList[uncompletedIndex].jp
+        const spanJp1 = cloneProbSentence.getElementById("jpUnComplete1")
+        spanJp1.innerHTML = probList1[uncompletedIndex].jp
+
+        const spanJp2 = cloneProbSentence.getElementById("jpUnComplete2")
+        spanJp2.innerHTML = probList2[uncompletedIndex].jp
 
         // 出題文章(ローマ字)を挿入
-        const spanRomaji = cloneProbSentence.getElementById("romajiUnComplete")
-        spanRomaji.innerHTML = probList[uncompletedIndex].romaji
+        const spanRomaji1 = cloneProbSentence.getElementById("romajiUnComplete1")
+        spanRomaji1.innerHTML = probList1[uncompletedIndex].romaji
+
+        const spanRomaji2 = cloneProbSentence.getElementById("romajiUnComplete2")
+        spanRomaji2.innerHTML = probList2[uncompletedIndex].romaji
 
         // テンプレートから複製したクローンをボックスに挿入
         boxProbSentence.innerHTML = ""
@@ -385,7 +413,7 @@
 
     // 出題してない文章を return する関数
     function getUncompletedIndex() {
-      for (const [index, element] of completedList.entries()) {
+      for (const [index, element] of completedList1.entries()) {
         if (!element) {
           return index
         }
@@ -395,9 +423,10 @@
 
     // 出題した文章の status を true に変更する関数
     function updateUncompletedIndex() {
-      for (const [index, element] of completedList.entries()) {
+      for (const [index, element] of completedList1.entries()) {
         if (!element) {
-          completedList[index] = true
+          completedList1[index] = true
+          completedList2[index] = true
           break
         }
       }
@@ -420,8 +449,8 @@
       const uncompletedIndex = getUncompletedIndex()
 
       if(uncompletedIndex != -1){
-        const sentenceJp = probList[uncompletedIndex].jp
-        const sentenceRomaji = probList[uncompletedIndex].romaji
+        const sentenceJp = probList1[uncompletedIndex].jp
+        const sentenceRomaji = probList1[uncompletedIndex].romaji
 
         console.log("入力文字 : " + userInputSentence)
 
@@ -442,8 +471,8 @@
 
           // 画面に表示している文章を取得
           const boxProbSentence = document.querySelector("#box-prob-sentence")
-          const printCorrectSentenceRomaji = boxProbSentence.querySelector("#romajiComplete")
-          const printFailureSentenceRomaji = boxProbSentence.querySelector("#romajiUnComplete")
+          const printCorrectSentenceRomaji = boxProbSentence.querySelector("#romajiComplete1")
+          const printFailureSentenceRomaji = boxProbSentence.querySelector("#romajiUnComplete1")
           
           // 正しく入力された文字は緑色の文字にして再表示
           const sentenceRomajiSize = sentenceRomaji.length
