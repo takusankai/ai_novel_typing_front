@@ -10,6 +10,10 @@
     .background {
       background-color: #f3deb9;
     }
+    .uirestartbutton{
+      text-align:center;
+      
+    }
   </style>
 </head>
 <body class="background">
@@ -227,9 +231,14 @@
   </template>
 
   <template id = "template-return-button">
-    <button class="ui button">
-      Button
-    </button>
+    <div class="ui container">
+      <div class="uirestartbutton">
+        <button id = "rebutton" class="ui button2">
+          <i class="right arrow icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+          リスタート
+        </font></font></button>
+      </div>      
+    </div>
   </template>
 
   <script>
@@ -558,6 +567,13 @@
       // スタート画面を非表示にする処理
       const boxStartingPage = document.querySelector("#box-starting-page")
       boxStartingPage.innerHTML = ""
+    })
+
+    $(document).on("click", ".ui.button2", function(){
+      //リスタートboxを空にする処理
+
+      window.location.href = 'http://localhost:3000'; // ここに新しいページのURLを指定
+
     })
 
   </script>
