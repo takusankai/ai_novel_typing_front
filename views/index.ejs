@@ -43,9 +43,8 @@
     <!-- 起動時の画面を挿入 -->
     <div id="box-starting-page"></div>
 
-    <audio id="btn_audio" loop>
-      <source src="jingle_14.mp3" type="audio/mp3">
-    </audio>
+    <!-- 効果音を挿入 -->
+    <div id="box-sounds"></div>
 
   </main>
 
@@ -225,6 +224,15 @@
     </div>
   </template>
 
+  <template id="template-sounds">
+    <audio id="playing-sound" loop>
+      <source src="jingle_14.mp3" type="audio/mp3">
+    </audio>
+    <audio id="miss-typing-sound">
+      <source src="MissTypingSound.mp3" type="audio/mp3">
+    </audio>
+  </template>
+
   <script>
 
     // 現状では決め打ち。ChatGPTで生成した文章をこのリストに格納する
@@ -316,34 +324,8 @@
       
       // 全ての文章を出題 or 出題する文章が無い場合
       else{
-
-        // タイマーを停止
-        clearInterval(timerId)
-
-        // 判定結果を表示するボックスを取得
-        const boxCheckResult = document.querySelector("#box-check-result")
-        const templateCheckResult = document.querySelector("#template-check-result")
-        const cloneCheckResult = document.importNode(templateCheckResult.content, true)
-
-        // スコアを挿入
-        const totalResult = cloneCheckResult.querySelector(".total-result")
-        totalResult.innerHTML = checkScore()
-
-        // 正解数と不正解数を挿入
-        const correct = cloneCheckResult.querySelector(".correct")
-        const failure = cloneCheckResult.querySelector(".failure")
-        correct.innerHTML = correctTypingCount
-        failure.innerHTML = missingTypingCount
-
-        // 経過時間を挿入
-        const elapsed = cloneCheckResult.querySelector(".elapsed")
-        elapsed.innerHTML = calculateFinishedTime(startTime)
-
-        // テンプレートから複製したクローンをボックスに挿入
-        boxCheckResult.innerHTML = ""
-        boxCheckResult.appendChild(cloneCheckResult)
-
-
+        // タイピングゲームを終了する
+        finishTypingGameProcess()
       }
       
     }
@@ -448,10 +430,60 @@
       }
     }
 
+    // タイピングゲームが終了したときに実行される関数
+    function finishTypingGameProcess(){
+
+      // タイピングゲーム中に流れている BGM を停止
+      stopPlaySound()
+
+      // タイマーを停止
+      clearInterval(timerId)
+
+      // 判定結果を表示するボックスを取得
+      const boxCheckResult = document.querySelector("#box-check-result")
+      const templateCheckResult = document.querySelector("#template-check-result")
+      const cloneCheckResult = document.importNode(templateCheckResult.content, true)
+
+      // スコアを挿入
+      const totalResult = cloneCheckResult.querySelector(".total-result")
+      totalResult.innerHTML = checkScore()
+
+      // 正解数と不正解数を挿入
+      const correct = cloneCheckResult.querySelector(".correct")
+      const failure = cloneCheckResult.querySelector(".failure")
+      correct.innerHTML = correctTypingCount
+      failure.innerHTML = missingTypingCount
+
+      // 経過時間を挿入
+      const elapsed = cloneCheckResult.querySelector(".elapsed")
+      elapsed.innerHTML = calculateFinishedTime(startTime)
+
+      // テンプレートから複製したクローンをボックスに挿入
+      boxCheckResult.innerHTML = ""
+      boxCheckResult.appendChild(cloneCheckResult)
+    }
+
+    // タイピングゲーム中に BGM を流す関数
+    function startPlayingSound(){
+      const boxSounds = document.querySelector("#box-sounds")
+      const playingSound = boxSounds.querySelector("#playing-sound")
+      playingSound.currentTime = 0
+      playingSound.play()
+    }
+
+    // タイピングゲームが終了したときに BGM を停止する関数
+    function stopPlaySound(){
+      const boxSounds = document.querySelector("#box-sounds")
+      const playingSound = boxSounds.querySelector("#playing-sound")
+      playingSound.pause()
+    }
+
     // タイピングミスしたときに効果音を鳴らす関数
     function generateMissTypingSound(){
-      document.getElementById('btn_audio').currentTime = 0; //連続クリックに対応
-      document.getElementById('btn_audio').play(); //クリックしたら音を再生
+      const boxSounds = document.querySelector("#box-sounds")
+      const missTypingSound = boxSounds.querySelector("#miss-typing-sound")
+      missTypingSound.currentTime = 0
+      missTypingSound.play()
     }
 
     // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
@@ -524,6 +556,12 @@
       boxStartingPage.innerHTML = ""
       boxStartingPage.appendChild(cloneStartingPage)
 
+      // 効果音を設定
+      const boxSounds = document.querySelector("#box-sounds")
+      const templateSounds = document.querySelector("#template-sounds")
+      const cloneSounds = document.importNode(templateSounds.content, true)
+      boxSounds.innerHTML = ""
+      boxSounds.appendChild(cloneSounds)
     })
 
     // キーボード入力したときに実行
@@ -537,7 +575,7 @@
 
     // スタート画面にてボタンを押したときに実行
     $(document).on("click", ".ui.button", function(){
-      generateMissTypingSound()
+      startPlayingSound()
       createTypingScreen()
       startTime = performance.now()
       timerId = setInterval(() => calculateElapsedTime(startTime), 10);
