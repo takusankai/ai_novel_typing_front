@@ -10,6 +10,10 @@
     .background {
       background-color: #f3deb9;
     }
+    .uirestartbutton{
+      text-align:center;
+      
+    }
   </style>
 </head>
 <body class="background">
@@ -47,6 +51,9 @@
     <!-- 起動時の画面を挿入 -->
     <div id="box-starting-page"></div>
 
+
+    <!-- 効果音を挿入 -->
+    <div id="box-sounds"></div>
 
   </main>
 
@@ -160,7 +167,6 @@
   
   <!-- 起動時の画面と対応 -->
   <template id="template-starting-page">
-
     <div class="ui hidden divider"></div>
     <div class="ui container">
       <h1 class="ui center aligned header">
@@ -169,9 +175,9 @@
         </div>
       </h1>
       <div class="ui hidden divider"></div>
-
+      
       <div id="startpage-start-button" class="ui center aligned grid">
-        <div class="ui animated fade button" tabindex="0">
+        <div class="ui animated fade button" tabindex="0">ああああああああああああああああああああああああああああああああああ
           <div class="visible content">
             <font style="vertical-align: inherit;">
               <font style="vertical-align: inherit;">
@@ -201,7 +207,7 @@
           </div>
         </div>
       <div class="ui hidden divider"></div>
-
+      
       <!-- GPTから生成した文章の表示をする仮ボタン -->
       <button id="startpage-gpt-button" class="ui button">gptスタート！</button>
       <div class="ui hidden divider"></div>
@@ -230,7 +236,7 @@
         </div>
       </details>
       <div class="ui hidden divider"></div>
-
+      
       <!-- GPTから生成した文章を表示する -->
       <div id="output1"></div>
       <div id="output2"></div>
@@ -239,10 +245,24 @@
     </div>
   </template>
 
+  <template id="template-sounds">
+    <audio id="playing-sound" loop>
+      <source src="jingle_14.mp3" type="audio/mp3">
+    </audio>
+    <audio id="miss-typing-sound">
+      <source src="MissTypingSound.mp3" type="audio/mp3">
+    </audio>
+  </template>
+
   <template id = "template-return-button">
-    <button class="ui button">
-      Button
-    </button>
+    <div class="ui container">
+      <div class="uirestartbutton">
+        <button id = "rebutton" class="ui button2">
+          <i class="right arrow icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+          リスタート
+        </font></font></button>
+      </div>      
+    </div>
   </template>
 
   <script>
@@ -344,36 +364,8 @@
       
       // 全ての文章を出題 or 出題する文章が無い場合
       else{
-
-        // タイマーを停止
-        clearInterval(timerId)
-
-        // 判定結果を表示するボックスを取得
-        const boxCheckResult = document.querySelector("#box-check-result")
-        const templateCheckResult = document.querySelector("#template-check-result")
-        const cloneCheckResult = document.importNode(templateCheckResult.content, true)
-
-        // スコアを挿入
-        const totalResult = cloneCheckResult.querySelector(".total-result")
-        totalResult.innerHTML = checkScore()
-
-        // 正解数と不正解数を挿入
-        const correct = cloneCheckResult.querySelector(".correct")
-        const failure = cloneCheckResult.querySelector(".failure")
-        correct.innerHTML = correctTypingCount
-        failure.innerHTML = missingTypingCount
-
-        // 経過時間を挿入
-        const elapsed = cloneCheckResult.querySelector(".elapsed")
-        elapsed.innerHTML = calculateFinishedTime(startTime)
-
-        // テンプレートから複製したクローンをボックスに挿入
-        boxCheckResult.innerHTML = ""
-        boxCheckResult.appendChild(cloneCheckResult)
-
-
-        //リスタートボタンの表示とスタート画面に遷移する処理
-        restartStartScreen()
+        // タイピングゲームを終了する
+        finishTypingGameProcess()
       }
       
     }
@@ -463,6 +455,9 @@
 
         // タイピングミスした場合
         }else{
+          // 効果音を鳴らす
+          generateMissTypingSound()
+
           // 誤入力回数を更新
           missingTypingCount += 1
 
@@ -475,10 +470,63 @@
       }
     }
 
+    // タイピングゲームが終了したときに実行される関数
+    function finishTypingGameProcess(){
+
+      // タイピングゲーム中に流れている BGM を停止
+      stopPlaySound()
+
+      // タイマーを停止
+      clearInterval(timerId)
+
+      // 判定結果を表示するボックスを取得
+      const boxCheckResult = document.querySelector("#box-check-result")
+      const templateCheckResult = document.querySelector("#template-check-result")
+      const cloneCheckResult = document.importNode(templateCheckResult.content, true)
+
+      // スコアを挿入
+      const totalResult = cloneCheckResult.querySelector(".total-result")
+      totalResult.innerHTML = checkScore()
+
+      // 正解数と不正解数を挿入
+      const correct = cloneCheckResult.querySelector(".correct")
+      const failure = cloneCheckResult.querySelector(".failure")
+      correct.innerHTML = correctTypingCount
+      failure.innerHTML = missingTypingCount
+
+      // 経過時間を挿入
+      const elapsed = cloneCheckResult.querySelector(".elapsed")
+      elapsed.innerHTML = calculateFinishedTime(startTime)
+
+      // テンプレートから複製したクローンをボックスに挿入
+      boxCheckResult.innerHTML = ""
+      boxCheckResult.appendChild(cloneCheckResult)
+      
+      //リスタートボタンの表示とスタート画面に遷移する処理
+      restartStartScreen()
+    }
+
+    // タイピングゲーム中に BGM を流す関数
+    function startPlayingSound(){
+      const boxSounds = document.querySelector("#box-sounds")
+      const playingSound = boxSounds.querySelector("#playing-sound")
+      playingSound.currentTime = 0
+      playingSound.play()
+    }
+
+    // タイピングゲームが終了したときに BGM を停止する関数
+    function stopPlaySound(){
+      const boxSounds = document.querySelector("#box-sounds")
+      const playingSound = boxSounds.querySelector("#playing-sound")
+      playingSound.pause()
+    }
+
     // タイピングミスしたときに効果音を鳴らす関数
     function generateMissTypingSound(){
-      const templateSounds = document.querySelector("#template-sounds")
-      //const missTypingSound = templateSounds
+      const boxSounds = document.querySelector("#box-sounds")
+      const missTypingSound = boxSounds.querySelector("#miss-typing-sound")
+      missTypingSound.currentTime = 0
+      missTypingSound.play()
     }
 
     // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
@@ -538,7 +586,7 @@
 
       return hours + '時間 ' + minutes + '分 ' + seconds + '秒 ' + remainingMilliseconds + 'ミリ秒'
     }
-
+    
     // GPTから生成した文章を取得する関数
     function getGeneratedSentence(){
       
@@ -576,7 +624,7 @@
       });
 
     }
-
+    
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
       
@@ -589,6 +637,12 @@
       boxStartingPage.innerHTML = ""
       boxStartingPage.appendChild(cloneStartingPage)
 
+      // 効果音を設定
+      const boxSounds = document.querySelector("#box-sounds")
+      const templateSounds = document.querySelector("#template-sounds")
+      const cloneSounds = document.importNode(templateSounds.content, true)
+      boxSounds.innerHTML = ""
+      boxSounds.appendChild(cloneSounds)
     })
 
     // キーボード入力したときに実行
@@ -600,8 +654,9 @@
       }
     })
 
-    // スタート画面にてスタートボタンを押したときに実行
+    // スタート画面にてボタンを押したときに実行
     $(document).on("click", "#startpage-start-button", function(){
+      startPlayingSound()
       createTypingScreen()
       startTime = performance.now()
       timerId = setInterval(() => calculateElapsedTime(startTime), 10);
@@ -611,6 +666,13 @@
       boxStartingPage.innerHTML = ""
     })
 
+    $(document).on("click", ".ui.button2", function(){
+      //リスタートboxを空にする処理
+
+      window.location.href = 'http://localhost:3000'; // ここに新しいページのURLを指定
+
+    })
+    
     // スタート画面にてGPTボタンを押したときに実行
     $(document).on("click", "#startpage-gpt-button", function(){
       getGeneratedSentence()
