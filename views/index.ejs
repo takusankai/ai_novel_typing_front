@@ -175,8 +175,9 @@
         </div>
       </h1>
       <div class="ui hidden divider"></div>
-      <div class="ui center aligned grid">
-        <div class="ui animated fade button" tabindex="0">
+      
+      <div id="startpage-start-button" class="ui center aligned grid">
+        <div class="ui animated fade button" tabindex="0">ああああああああああああああああああああああああああああああああああ
           <div class="visible content">
             <font style="vertical-align: inherit;">
               <font style="vertical-align: inherit;">
@@ -206,6 +207,11 @@
           </div>
         </div>
       <div class="ui hidden divider"></div>
+      
+      <!-- GPTから生成した文章の表示をする仮ボタン -->
+      <button id="startpage-gpt-button" class="ui button">gptスタート！</button>
+      <div class="ui hidden divider"></div>
+      
       <details class="ui accordion">
         <summary class="title">
           <i class="dropdown icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">このゲームのルールは？
@@ -230,6 +236,12 @@
         </div>
       </details>
       <div class="ui hidden divider"></div>
+      
+      <!-- GPTから生成した文章を表示する -->
+      <div id="output1"></div>
+      <div id="output2"></div>
+      <div class="ui hidden divider"></div>
+      
     </div>
   </template>
 
@@ -574,7 +586,45 @@
 
       return hours + '時間 ' + minutes + '分 ' + seconds + '秒 ' + remainingMilliseconds + 'ミリ秒'
     }
+    
+    // GPTから生成した文章を取得する関数
+    function getGeneratedSentence(){
+      
+      // 関数が呼び出された直後は、テキストの内容を「wait」にする
+      document.getElementById('output1').textContent = 'wait...';
+      document.getElementById('output2').textContent = 'wait...';
 
+      const url = 'http://localhost:5000/';
+
+      // APIにリクエストを送信
+      let data = { key: "あなたは海賊船の一員として、伝説の宝を探しに出航しました。船長が指示を出します。" };
+      fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+        // 
+        console.log(JSON.parse(data));
+        document.getElementById('output1').innerHTML = JSON.parse(data).シナリオ名 + "<br>" + JSON.parse(data).シナリオ内容;
+        document.getElementById('output2').innerHTML = JSON.parse(data).選択肢1 + "<br>" + JSON.parse(data).選択肢2;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('output').textContent = error.toString();
+      });
+
+    }
+    
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
       
@@ -605,7 +655,7 @@
     })
 
     // スタート画面にてボタンを押したときに実行
-    $(document).on("click", ".ui.button", function(){
+    $(document).on("click", "#startpage-start-button", function(){
       startPlayingSound()
       createTypingScreen()
       startTime = performance.now()
@@ -621,6 +671,11 @@
 
       window.location.href = 'http://localhost:3000'; // ここに新しいページのURLを指定
 
+    })
+    
+    // スタート画面にてGPTボタンを押したときに実行
+    $(document).on("click", "#startpage-gpt-button", function(){
+      getGeneratedSentence()
     })
 
   </script>
