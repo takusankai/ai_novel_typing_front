@@ -272,17 +272,25 @@
   <script>
 
     // 現状では決め打ち。ChatGPTで生成した文章をこのリストに格納する
-    const probList = [
+    const probList1 = [
       {jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
       {jp: "ワンピース速報", romaji: "ONEPIECESOKUHOU"}, 
     ]
+    const probList2 = [
+      {jp: "ワンピース速報", romaji: "ONEPIECESOKUHOU"}, 
+      {jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
+    ]
 
     /*
-      probListと対応。
+      probList1,probList2に対応。
       出題した文章にはtrue, 出題してない文章にはfalseを設定。
       初期値はfalse
     */
-    const completedList = [
+    const completedList1 = [
+      false, 
+      false
+    ]
+    const completedList2 = [
       false, 
       false
     ]
@@ -319,7 +327,7 @@
     // 全出題文章の合計文字数を return する関数
     function calculateTotalSentencesLength(){
       let sentencesSize = 0
-      probList.forEach(prob => {
+      probList1.forEach(prob => {
         sentencesSize += prob.romaji.length
       })
       return sentencesSize
@@ -355,11 +363,11 @@
         
         // 出題文章(日本語)を挿入
         const spanJp = cloneProbSentence.getElementById("jpUnComplete")
-        spanJp.innerHTML = probList[uncompletedIndex].jp
+        spanJp.innerHTML = probList1[uncompletedIndex].jp
 
         // 出題文章(ローマ字)を挿入
         const spanRomaji = cloneProbSentence.getElementById("romajiUnComplete")
-        spanRomaji.innerHTML = probList[uncompletedIndex].romaji
+        spanRomaji.innerHTML = probList1[uncompletedIndex].romaji
 
         // テンプレートから複製したクローンをボックスに挿入
         boxProbSentence.innerHTML = ""
@@ -385,7 +393,7 @@
 
     // 出題してない文章を return する関数
     function getUncompletedIndex() {
-      for (const [index, element] of completedList.entries()) {
+      for (const [index, element] of completedList1.entries()) {
         if (!element) {
           return index
         }
@@ -395,9 +403,10 @@
 
     // 出題した文章の status を true に変更する関数
     function updateUncompletedIndex() {
-      for (const [index, element] of completedList.entries()) {
+      for (const [index, element] of completedList1.entries()) {
         if (!element) {
-          completedList[index] = true
+          completedList1[index] = true
+          completedList2[index] = true
           break
         }
       }
@@ -420,8 +429,8 @@
       const uncompletedIndex = getUncompletedIndex()
 
       if(uncompletedIndex != -1){
-        const sentenceJp = probList[uncompletedIndex].jp
-        const sentenceRomaji = probList[uncompletedIndex].romaji
+        const sentenceJp = probList1[uncompletedIndex].jp
+        const sentenceRomaji = probList1[uncompletedIndex].romaji
 
         console.log("入力文字 : " + userInputSentence)
 
