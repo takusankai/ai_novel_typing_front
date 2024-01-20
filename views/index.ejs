@@ -250,6 +250,9 @@
     <audio id="miss-typing-sound">
       <source src="MissTypingSound.mp3" type="audio/mp3">
     </audio>
+    <audio id="correct-sound">
+      <source src="5.mp3" type="audio/mp3">
+    </audio>
     <audio id="finish-sound">
       <source src="jingle_14.mp3" type="audio/mp3">
     </audio>
@@ -447,8 +450,9 @@
           printCorrectSentenceRomaji.innerHTML = sentenceRomaji.slice(0, correctInputLen)
           printFailureSentenceRomaji.innerHTML = sentenceRomaji.slice(correctInputLen, sentenceRomajiSize)
 
-          // 出題文章を全て正しく入力した場合は、次の文章を出題
+          // 出題文章を全て正しく入力した場合は、正解の効果音を鳴らして次の文章を出題
           if(sentenceRomajiSize == correctInputLen){
+            generateCorrectSound()
             updateUncompletedIndex()
             updateProbSentence()
             correctInputLen = 0
@@ -537,7 +541,11 @@
 
     // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
     function generateCorrectSound(){
-
+      const boxSounds = document.querySelector("#box-sounds")
+      const correctSound = boxSounds.querySelector("#correct-sound")
+      correctSound.currentTime = 0
+      correctSound.play()
+      correctSound.volume = 0.9
     }
 
     // タイピングゲーム終了時に効果音を鳴らす関数
