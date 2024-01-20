@@ -155,22 +155,70 @@
 
   <!-- 起動時の画面と対応 -->
   <template id="template-starting-page">
+    <div class="ui hidden divider"></div>
     <div class="ui container">
-      <h2 class="ui header">
-        <i class="hand point right outline icon"></i>
+      <h1 class="ui center aligned header">
         <div class="content">
           タイピングゲームを開始するには ボタン を押してください
         </div>
-      </h2>
-      <button class="ui button">
-        <font style="vertical-align: inherit;">
-          <font style="vertical-align: inherit;">
-            フォローする
-          </font>
-        </font>
-      </button>
+      </h1>
+      <div class="ui hidden divider"></div>
+      <div class="ui center aligned grid">
+        <div class="ui animated fade button" tabindex="0">
+          <div class="visible content">
+            <font style="vertical-align: inherit;">
+              <font style="vertical-align: inherit;">
+                <span class="ui huge red text">
+                  <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                      click to start
+                    </font>
+                  </font>
+                </span>
+              </font>
+            </font>
+          </div>
+          <div class="hidden content">
+              <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">
+                  <span class="ui large red text">
+                    <font style="vertical-align: inherit;">
+                      <font style="vertical-align: inherit;">
+                        ready...?
+                      </font>
+                    </font>
+                  </span>
+                </font>
+              </font>
+            </div>
+          </div>
+        </div>
+      <div class="ui hidden divider"></div>
+      <details class="ui accordion">
+        <summary class="title">
+          <i class="dropdown icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">このゲームのルールは？
+        </font></font></summary>
+        <div class="content">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">頑張れ！！！（肩ポン）</font></font></p>
+        </div>
+      </details>
+      <details class="ui accordion">
+        <summary class="title">
+          <i class="dropdown icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">どのように作られていますか？
+        </font></font></summary>
+        <div class="content">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">気合です。感じ取ってください。</font></font></p>
+        </div>
+      </details><details class="ui accordion">
+        <summary class="title">
+          <i class="dropdown icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">チーム名はなんですか？
+        </font></font></summary>
+        <div class="content">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">あああああああああああああああああああああああああああああああああああああああ</font></font></p>
+        </div>
+      </details>
+      <div class="ui hidden divider"></div>
     </div>
-    <div class="ui hidden divider"></div>
   </template>
 
   <script>
@@ -457,19 +505,8 @@
     document.addEventListener("keydown", (event) =>{
       var key = event.code
       if(key){
-        //　ゲーム開始条件はスタート画面のボタンを押した時に変更
-        
-        // // Enter が入力されたらゲーム開始
-        // if(key == "Enter" && !isStartGame){
-        //   createTypingScreen()
-        //   startTime = performance.now()
-        //   timerId = setInterval(() => calculateElapsedTime(startTime), 10);
-        // }
-
-        // ゲームが既に開始しておりユーザーがタイピングしている状態なのでタイピング判定する
-        //else{
+        // ユーザーがタイピングしている状態なのでタイピング判定する
           checkInput(event.code[event.code.length-1])
-        //}
       }
     })
 
@@ -480,9 +517,8 @@
       timerId = setInterval(() => calculateElapsedTime(startTime), 10);
 
       // スタート画面を非表示にする処理
-      
-      // ここに書く
-
+      const boxStartingPage = document.querySelector("#box-starting-page")
+      boxStartingPage.innerHTML = ""
     })
 
   </script>
