@@ -40,6 +40,9 @@
     <!-- スコア判定の指標(B ~ S ランクを取得するための要件一覧)を挿入 -->
     <div id="box-score-example"></div>
 
+    <!-- 起動時の画面を挿入 -->
+    <div id="box-starting-page"></div>
+
   </main>
 
   <template id="template-time-and-input-count">
@@ -146,6 +149,26 @@
           </tbody>
         </thead>
       </table>
+    </div>
+    <div class="ui hidden divider"></div>
+  </template>
+
+  <!-- 起動時の画面と対応 -->
+  <template id="template-starting-page">
+    <div class="ui container">
+      <h2 class="ui header">
+        <i class="hand point right outline icon"></i>
+        <div class="content">
+          タイピングゲームを開始するには ボタン を押してください
+        </div>
+      </h2>
+      <button class="ui button">
+        <font style="vertical-align: inherit;">
+          <font style="vertical-align: inherit;">
+            フォローする
+          </font>
+        </font>
+      </button>
     </div>
     <div class="ui hidden divider"></div>
   </template>
@@ -418,29 +441,50 @@
 
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
-      /* 
-        localhost3000にアクセスしたときに実行される
-        何も記載していないので現状ではアクセスしただけだと何も表示されない
-        (htmlの<header><main>のみロードされる)
-      */
+      
+      /* localhost3000にアクセスしたときに実行される処理 */
+
+      // 起動時の画面を挿入
+      const boxStartingPage = document.querySelector("#box-starting-page")
+      const templateStartingPage = document.querySelector("#template-starting-page")
+      const cloneStartingPage = document.importNode(templateStartingPage.content, true)
+      boxStartingPage.innerHTML = ""
+      boxStartingPage.appendChild(cloneStartingPage)
+
     })
 
     // キーボード入力したときに実行
     document.addEventListener("keydown", (event) =>{
       var key = event.code
       if(key){
-        // Enter が入力されたらゲーム開始
-        if(key == "Enter" && !isStartGame){
-          createTypingScreen()
-          startTime = performance.now()
-          timerId = setInterval(() => calculateElapsedTime(startTime), 10);
-        }
+        //　ゲーム開始条件はスタート画面のボタンを押した時に変更
+        
+        // // Enter が入力されたらゲーム開始
+        // if(key == "Enter" && !isStartGame){
+        //   createTypingScreen()
+        //   startTime = performance.now()
+        //   timerId = setInterval(() => calculateElapsedTime(startTime), 10);
+        // }
+
         // ゲームが既に開始しておりユーザーがタイピングしている状態なのでタイピング判定する
-        else{
+        //else{
           checkInput(event.code[event.code.length-1])
-        }
+        //}
       }
     })
+
+    // スタート画面にてボタンを押したときに実行
+    $(document).on("click", ".ui.button", function(){
+      createTypingScreen()
+      startTime = performance.now()
+      timerId = setInterval(() => calculateElapsedTime(startTime), 10);
+
+      // スタート画面を非表示にする処理
+      
+      // ここに書く
+
+    })
+
   </script>
 </body>
 </html>
