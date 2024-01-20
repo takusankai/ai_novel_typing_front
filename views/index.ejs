@@ -150,6 +150,16 @@
     <div class="ui hidden divider"></div>
   </template>
 
+  <!-- 効果音を実装したテンプレート。必要な効果音をJS側から参照するために使用 -->
+  <template id="template-sounds">
+    <audio class="miss-typing-sound">
+      <source src="./sounds/MissTypingSound.mp3" type="audio/mp3">
+    </audio>
+    <audio class="finish-sound">
+      <source src="./sounds/MissTypingSound.mp3" type="audio/mp3">
+    </audio>
+  </template>
+
   <script>
 
     // 現状では決め打ち。ChatGPTで生成した文章をこのリストに格納する
@@ -370,7 +380,8 @@
 
     // タイピングミスしたときに効果音を鳴らす関数
     function generateMissTypingSound(){
-
+      const templateSounds = document.querySelector("#template-sounds")
+      //const missTypingSound = templateSounds
     }
 
     // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
@@ -379,8 +390,8 @@
     }
 
     // タイピングゲーム終了時に効果音を鳴らす関数
-    function generateFinishSound(){
-
+    function generateFinishSound() {
+      
     }
 
     // 経過時間を計算する関数
@@ -447,6 +458,7 @@
         // Enter が入力されたらゲーム開始
         if(key == "Enter" && !isStartGame){
           createTypingScreen()
+          isStartGame = true
           startTime = performance.now()
           timerId = setInterval(() => calculateElapsedTime(startTime), 10);
         }
