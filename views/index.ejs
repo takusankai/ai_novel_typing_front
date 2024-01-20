@@ -488,9 +488,10 @@
             updateProbSentence()
             correctInputLen = 0
           }
-
+        }
+        
         // タイピングミスした場合
-        }else{
+        else{
           // 効果音を鳴らす
           generateMissTypingSound()
 
@@ -504,6 +505,11 @@
           failureCount.innerHTML = missingTypingCount
         }
       }
+    }
+
+    // 選択肢1に対応する checkInput
+    function checkInputSelect1(){
+
     }
 
     // タイピングゲームが終了したときに実行される関数
