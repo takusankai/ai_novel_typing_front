@@ -40,8 +40,13 @@
     <!-- スコア判定の指標(B ~ S ランクを取得するための要件一覧)を挿入 -->
     <div id="box-score-example"></div>
 
+
+    <!-- タイピングゲームが終了した時にスタート画面に戻るためのボタンを挿入　-->
+    <div id="box-restart-button"></div>
+
     <!-- 起動時の画面を挿入 -->
     <div id="box-starting-page"></div>
+
 
   </main>
 
@@ -221,6 +226,12 @@
     </div>
   </template>
 
+  <template id = "template-return-button">
+    <button class="ui button">
+      Button
+    </button>
+  </template>
+
   <script>
 
     // 現状では決め打ち。ChatGPTで生成した文章をこのリストに格納する
@@ -283,6 +294,14 @@
       generateBoxTypingCount()
     }
 
+    function restartStartScreen(){
+      const boxRestartButton = document.querySelector("#box-restart-button")
+      const templateRestartingButton = document.querySelector("#template-return-button")
+      const cloneRestartingButton = document.importNode(templateRestartingButton.content, true)
+      boxRestartButton.innerHTML = ""
+      boxRestartButton.appendChild(cloneRestartingButton)
+    }
+
     // 出題文章を表示する画面を作成する関数。 box-prob-sentence と対応。
     function updateProbSentence(){
 
@@ -338,6 +357,10 @@
         // テンプレートから複製したクローンをボックスに挿入
         boxCheckResult.innerHTML = ""
         boxCheckResult.appendChild(cloneCheckResult)
+
+
+        //リスタートボタンの表示とスタート画面に遷移する処理
+        restartStartScreen()
       }
       
     }
