@@ -269,18 +269,32 @@
 
   <!-- box-sounds と対応 -->
   <template id="template-sounds">
+
+    <!-- タイピングゲーム中に流れる BGM -->
     <audio id="playing-sound" loop>
       <source src="Springin__.mp3" type="audio/mp3">
     </audio>
-    <audio id="miss-typing-sound">
-      <source src="MissTypingSound.mp3" type="audio/mp3">
-    </audio>
-    <audio id="correct-sound">
-      <source src="5.mp3" type="audio/mp3">
-    </audio>
+
+    <!-- タイピングゲーム終了時に流れる BGM -->
     <audio id="finish-sound">
       <source src="jingle_14.mp3" type="audio/mp3">
     </audio>
+
+    <!-- 次の文章を出題するときに流れる効果音 -->
+    <audio id="correct-sound">
+      <source src="5.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- 正しくタイピングミスしたときに流れる効果音 -->
+    <audio id="correct-typing-sound">
+      <source src="correct_1.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- タイピングミスしたときに流れる効果音 -->
+    <audio id="miss-typing-sound">
+      <source src="error_1.mp3" type="audio/mp3">
+    </audio>
+
   </template>
 
   <template id = "template-return-button">
@@ -484,6 +498,9 @@
 
         // 正しく入力したか判定
         if(userInputSentence.toUpperCase() === sentenceRomaji[correctInputLen]){
+
+          // 正しくタイピングミスしたときの効果音を鳴らす
+          correctTypingSound()
           
           // 正しくタイピングした回数を更新
           correctTypingCount += 1
@@ -652,6 +669,15 @@
       const boxSounds = document.querySelector("#box-sounds")
       const playingSound = boxSounds.querySelector("#playing-sound")
       playingSound.pause()
+    }
+
+    // 正しくタイピングミスしたときに効果音を鳴らす関数
+    function correctTypingSound(){
+      const boxSounds = document.querySelector("#box-sounds")
+      const correctTypingSound = boxSounds.querySelector("#correct-typing-sound")
+      correctTypingSound.currentTime = 0
+      correctTypingSound.play()
+      correctTypingSound.volume = 0.9
     }
 
     // タイピングミスしたときに効果音を鳴らす関数
