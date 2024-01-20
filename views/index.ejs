@@ -483,6 +483,8 @@
 
           // 出題文章を全て正しく入力した場合は、正解の効果音を鳴らして次の文章を出題
           if(sentenceRomajiSize == correctInputLen){
+            isSelect1 = false
+            isSelect2 = false
             generateCorrectSound()
             updateUncompletedIndex()
             updateProbSentence()
@@ -698,12 +700,28 @@
       boxSounds.appendChild(cloneSounds)
     })
 
+    var isSelect1 = false
+    var isSelect2 = false
     // キーボード入力したときに実行
     document.addEventListener("keydown", (event) =>{
-      var key = event.code
-      if(key){
+      var key = event.key
+
+      // 選択肢 1 を選択した場合
+      if (key === "1" && !isSelect1) {
+        isSelect1 = true
+      }
+
+      // 選択肢 2 を選択した場合
+      else if(key == '2' && !isSelect2){
+        isSelect2 = true
+      }
+
+      // それ以外の Key が入力された場合
+      else{
         // ユーザーがタイピングしている状態なのでタイピング判定する
-        checkInput(event.code[event.code.length-1])
+        if(isSelect1 || isSelect2){
+          checkInput(event.code[event.code.length-1])
+        }
       }
     })
 
