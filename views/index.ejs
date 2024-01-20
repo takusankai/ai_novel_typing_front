@@ -12,7 +12,11 @@
     }
     .uirestartbutton{
       text-align:center;
-      
+    }
+    #rebutton{
+      color:rgb(254, 11, 68);
+      margin-top: 100px;
+      transform: scale(2);
     }
   </style>
 </head>
@@ -271,13 +275,15 @@
   </template>
 
   <template id = "template-return-button">
-    <div class="ui container">
-      <div class="uirestartbutton">
-        <button id = "rebutton" class="ui button2">
-          <i class="right arrow icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-          リスタート
-        </font></font></button>
-      </div>      
+    <div class="large">
+      <div class="ui container">
+        <div class="uirestartbutton">
+          <button id = "rebutton" class="ui button2">
+            <i class="right arrow icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+            リスタート
+          </font></font></button>
+        </div>      
+      </div>
     </div>
   </template>
 
@@ -288,6 +294,10 @@
       {jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
       {jp: "ワンピース速報", romaji: "ONEPIECESOKUHOU"}, 
     ]
+    const probList2 = [
+      {jp: "ワンピース速報", romaji: "ONEPIECESOKUHOU"}, 
+      {jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
+    ]
 
     const probList2 = [
       {jp: "昨日お腹壊しました", romaji: "KINOUONAKAKOWASIMASITA"}, 
@@ -295,7 +305,11 @@
     ]
 
     /*
+<<<<<<< HEAD
       probList1と対応。
+=======
+      probList1,probList2に対応。
+>>>>>>> refs/remotes/origin/main
       出題した文章にはtrue, 出題してない文章にはfalseを設定。
       初期値はfalse
     */
@@ -303,7 +317,10 @@
       false, 
       false
     ]
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/main
     const completedList2 = [
       false, 
       false
@@ -311,7 +328,6 @@
 
     // 全出題文章の合計文字数を設定。スコア判定に使用。
     const totalSentencesLength = calculateTotalSentencesLength()
-    console.log(Math.floor(totalSentencesLength*0.3))
 
     // スコア判定の指標
     const scoreList = [
@@ -376,6 +392,7 @@
         const cloneProbSentence = document.importNode(templateProbSentence.content, true)
         
         // 出題文章(日本語)を挿入
+<<<<<<< HEAD
         const spanJp1 = cloneProbSentence.getElementById("jpUnComplete1")
         spanJp1.innerHTML = probList1[uncompletedIndex].jp
 
@@ -388,6 +405,14 @@
 
         const spanRomaji2 = cloneProbSentence.getElementById("romajiUnComplete2")
         spanRomaji2.innerHTML = probList2[uncompletedIndex].romaji
+=======
+        const spanJp = cloneProbSentence.getElementById("jpUnComplete")
+        spanJp.innerHTML = probList1[uncompletedIndex].jp
+
+        // 出題文章(ローマ字)を挿入
+        const spanRomaji = cloneProbSentence.getElementById("romajiUnComplete")
+        spanRomaji.innerHTML = probList1[uncompletedIndex].romaji
+>>>>>>> refs/remotes/origin/main
 
         // テンプレートから複製したクローンをボックスに挿入
         boxProbSentence.innerHTML = ""
