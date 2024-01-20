@@ -90,30 +90,30 @@
       </div>
     </div>
     <div class="ui hidden divider"></div>
+    <div class="ui hidden divider"></div>
   </template>
 
   <!-- box-prob-sentence と対応 -->
   <template id="template-prob-sentence">
     <div class="ui container">
-      <!-- 出題文章(日本語)を挿入 -->
-      <span class="ui big green text" id="jpComplete1"><!-- タイピング済の文字を挿入 --></span>
-      <span class="ui big text" id="jpUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
+      <!-- 出題文章1(日本語)を挿入 -->
+      <span class="ui huge green text" id="jpComplete1"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui huge text" id="jpUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
       <div class="ui divider"></div>
-      <!-- 出題文章(ローマ字)を挿入 -->
-      <span class="ui green text" id="romajiComplete1"><!-- タイピング済の文字を挿入 --></span>
-      <span class="ui text" id="romajiUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
-      
+      <!-- 出題文章1(ローマ字)を挿入 -->
+      <span class="ui big green text" id="romajiComplete1"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui big text" id="romajiUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
+      <!-- 枠線を挿入 -->
       <div class="ui horizontal divider">
-        Or
+        <span class="ui purple massive text">OR</span>
       </div>
-      
-      <!-- 出題文章(日本語)を挿入 -->
-      <span class="ui big green text" id="jpComplete2"><!-- タイピング済の文字を挿入 --></span>
-      <span class="ui big text" id="jpUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
+      <!-- 出題文章2(日本語)を挿入 -->
+      <span class="ui huge green text" id="jpComplete2"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui huge text" id="jpUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
       <div class="ui divider"></div>
-      <!-- 出題文章(ローマ字)を挿入 -->
-      <span class="ui green text" id="romajiComplete2"><!-- タイピング済の文字を挿入 --></span>
-      <span class="ui text" id="romajiUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
+      <!-- 出題文章2(ローマ字)を挿入 -->
+      <span class="ui big green text" id="romajiComplete2"><!-- タイピング済の文字を挿入 --></span>
+      <span class="ui big text" id="romajiUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
     </div>
     <div class="ui hidden divider"></div>
   </template>
@@ -758,6 +758,16 @@
       });
 
     }
+
+    // 選択肢 1 が選択されたときの処理を実行する関数
+    function processingSelect1(){
+      isSelect1 = true
+    }
+
+    // 選択肢 2 が選択されたときの処理を実行する関数
+    function processingSelect2(){
+      isSelect2 = true
+    }
     
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
@@ -783,12 +793,12 @@
 
       // 選択肢 1 を選択した場合
       if (key === "1" && !isSelect1) {
-        isSelect1 = true
+        processingSelect1()
       }
 
       // 選択肢 2 を選択した場合
       else if(key == '2' && !isSelect2){
-        isSelect2 = true
+        processingSelect2()
       }
 
       // それ以外の Key が入力された場合
