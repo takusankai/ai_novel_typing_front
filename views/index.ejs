@@ -108,7 +108,7 @@
       <span class="ui big text" id="romajiUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
       <!-- 枠線を挿入 -->
       <div class="ui horizontal divider">
-        <span class="ui purple massive text">OR</span>
+        <span class="ui yellow massive text">OR</span>
       </div>
       <!-- 出題文章2(日本語)を挿入 -->
       <span class="ui huge grey text" id="jpInvalid2"><!-- 選択されなかった場合に文字を挿入 --></span>
@@ -116,7 +116,7 @@
       <span class="ui huge text" id="jpUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
       <div class="ui divider"></div>
       <!-- 出題文章2(ローマ字)を挿入 -->
-      <span class="ui big white text" id="romajiInvalid2"><!-- 選択されなかった場合に文字を挿入 --></span>
+      <span class="ui big grey text" id="romajiInvalid2"><!-- 選択されなかった場合に文字を挿入 --></span>
       <span class="ui big green text" id="romajiComplete2"><!-- タイピング済の文字を挿入 --></span>
       <span class="ui big text" id="romajiUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
     </div>
@@ -800,12 +800,17 @@
 
       // 未入力文字を一時的に複製
       const jpUnComplete2 = boxProbSentence.querySelector("#jpUnComplete2")
-      const tempStr = jpUnComplete2.innerHTML
+      const romajiComplete2 = boxProbSentence.querySelector("#romajiUnComplete2")
+      const tempJp = jpUnComplete2.innerHTML
+      const tempRomaji = romajiComplete2.innerHTML
       jpUnComplete2.innerHTML = ""
+      romajiComplete2.innerHTML = ""
 
       // 未入力文字を無効文字に変換
       const jpInvalid2 = boxProbSentence.querySelector("#jpInvalid2")
-      jpInvalid2.innerHTML = tempStr
+      const romajiInvalid2 = boxProbSentence.querySelector("#romajiInvalid2")
+      jpInvalid2.innerHTML = tempJp
+      romajiInvalid2.innerHTML = tempRomaji
     }
 
     // 選択肢 2 が選択されたときの処理を実行する関数
@@ -815,12 +820,17 @@
 
       // 未入力文字を一時的に複製
       const jpUnComplete1 = boxProbSentence.querySelector("#jpUnComplete1")
-      const tempStr = jpUnComplete1.innerHTML
+      const romajiUnComplete1 = boxProbSentence.querySelector("#romajiUnComplete1")
+      const tempJp = jpUnComplete1.innerHTML
+      const tempRomaji = romajiUnComplete1.innerHTML
       jpUnComplete1.innerHTML = ""
+      romajiUnComplete1.innerHTML = ""
 
       // 未入力文字を無効文字に変換
       const jpInvalid1 = boxProbSentence.querySelector("#jpInvalid1")
-      jpInvalid1.innerHTML = tempStr
+      const romajiInvalid1 = boxProbSentence.querySelector("#romajiInvalid1")
+      jpInvalid1.innerHTML = tempJp
+      romajiInvalid1.innerHTML = tempRomaji
     }
     
     // ページをロードしたときに実行
@@ -845,14 +855,20 @@
     document.addEventListener("keydown", (event) =>{
       var key = event.key
 
-      // 選択肢 1 を選択した場合
-      if (key === "1" && !isSelect1) {
-        processingSelect1()
-      }
+      // どちらの文章も選択していない場合
+      if(!isSelect1 && !isSelect2){
 
-      // 選択肢 2 を選択した場合
-      else if(key == '2' && !isSelect2){
-        processingSelect2()
+        // 選択肢 1 を選択した場合
+        if (key === "1") {
+          console.log("11111")
+          processingSelect1()
+        }
+
+        // 選択肢 2 を選択した場合
+        else if(key == '2'){
+          console.log("22222")
+          processingSelect2()
+        }
       }
 
       // それ以外の Key が入力された場合
