@@ -44,13 +44,11 @@
     <!-- スコア判定の指標(B ~ S ランクを取得するための要件一覧)を挿入 -->
     <div id="box-score-example"></div>
 
-
     <!-- タイピングゲームが終了した時にスタート画面に戻るためのボタンを挿入　-->
     <div id="box-restart-button"></div>
 
     <!-- 起動時の画面を挿入 -->
     <div id="box-starting-page"></div>
-
 
     <!-- 効果音を挿入 -->
     <div id="box-sounds"></div>
@@ -247,10 +245,13 @@
 
   <template id="template-sounds">
     <audio id="playing-sound" loop>
-      <source src="jingle_14.mp3" type="audio/mp3">
+      <source src="Springin__.mp3" type="audio/mp3">
     </audio>
     <audio id="miss-typing-sound">
       <source src="MissTypingSound.mp3" type="audio/mp3">
+    </audio>
+    <audio id="finish-sound">
+      <source src="jingle_14.mp3" type="audio/mp3">
     </audio>
   </template>
 
@@ -476,6 +477,9 @@
       // タイピングゲーム中に流れている BGM を停止
       stopPlaySound()
 
+      // 終了を示す効果音を鳴らす
+      generateFinishSound()
+
       // タイマーを停止
       clearInterval(timerId)
 
@@ -512,6 +516,7 @@
       const playingSound = boxSounds.querySelector("#playing-sound")
       playingSound.currentTime = 0
       playingSound.play()
+      playingSound.volume = 0.1
     }
 
     // タイピングゲームが終了したときに BGM を停止する関数
@@ -527,6 +532,7 @@
       const missTypingSound = boxSounds.querySelector("#miss-typing-sound")
       missTypingSound.currentTime = 0
       missTypingSound.play()
+      missTypingSound.volume = 0.9
     }
 
     // 文章を正しく入力 ~ 次の文章を出題するときに効果音を鳴らす関数
@@ -535,8 +541,12 @@
     }
 
     // タイピングゲーム終了時に効果音を鳴らす関数
-    function generateFinishSound() {
-      
+    function generateFinishSound(){
+      const boxSounds = document.querySelector("#box-sounds")
+      const missTypingSound = boxSounds.querySelector("#finish-sound")
+      missTypingSound.currentTime = 0
+      missTypingSound.play()
+      missTypingSound.volume = 0.3
     }
 
     // 経過時間を計算する関数
