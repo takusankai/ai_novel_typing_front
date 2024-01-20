@@ -294,7 +294,6 @@
       {jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
       {jp: "ワンピース速報", romaji: "ONEPIECESOKUHOU"}, 
     ]
-
     const probList2 = [
       {jp: "昨日お腹壊しました", romaji: "KINOUONAKAKOWASIMASITA"}, 
       {jp: "トイレにこもって戦いました", romaji: "TOIRENIKOMOTTETATAKAIMASITA"}, 
@@ -302,7 +301,6 @@
 
     /*
       probList1,probList2に対応。
->>>>>>> refs/remotes/origin/main
       出題した文章にはtrue, 出題してない文章にはfalseを設定。
       初期値はfalse
     */
@@ -310,7 +308,6 @@
       false, 
       false
     ]
-
     const completedList2 = [
       false, 
       false
@@ -383,16 +380,14 @@
         
         // 出題文章(日本語)を挿入
         const spanJp1 = cloneProbSentence.getElementById("jpUnComplete1")
-        spanJp1.innerHTML = probList1[uncompletedIndex].jp
-
         const spanJp2 = cloneProbSentence.getElementById("jpUnComplete2")
+        spanJp1.innerHTML = probList1[uncompletedIndex].jp
         spanJp2.innerHTML = probList2[uncompletedIndex].jp
 
         // 出題文章(ローマ字)を挿入
         const spanRomaji1 = cloneProbSentence.getElementById("romajiUnComplete1")
-        spanRomaji1.innerHTML = probList1[uncompletedIndex].romaji
-
         const spanRomaji2 = cloneProbSentence.getElementById("romajiUnComplete2")
+        spanRomaji1.innerHTML = probList1[uncompletedIndex].romaji
         spanRomaji2.innerHTML = probList2[uncompletedIndex].romaji
 
         // テンプレートから複製したクローンをボックスに挿入
@@ -680,8 +675,6 @@
     
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
-      
-      /* localhost3000にアクセスしたときに実行される処理 */
 
       // 起動時の画面を挿入
       const boxStartingPage = document.querySelector("#box-starting-page")
@@ -721,9 +714,7 @@
 
     $(document).on("click", ".ui.button2", function(){
       //リスタートboxを空にする処理
-
       window.location.href = 'http://localhost:3000'; // ここに新しいページのURLを指定
-
     })
     
     // スタート画面にてGPTボタンを押したときに実行
