@@ -59,6 +59,7 @@
 
   </main>
 
+  <!-- box-time-and-input-count と対応 -->
   <template id="template-time-and-input-count">
     <div class="ui two column doubling stackable grid container">
       <div class="column">
@@ -97,10 +98,12 @@
   <template id="template-prob-sentence">
     <div class="ui container">
       <!-- 出題文章1(日本語)を挿入 -->
+      <span class="ui huge grey text" id="jpInvalid1"><!-- 選択されなかった場合に文字を挿入 --></span>
       <span class="ui huge green text" id="jpComplete1"><!-- タイピング済の文字を挿入 --></span>
       <span class="ui huge text" id="jpUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
       <div class="ui divider"></div>
       <!-- 出題文章1(ローマ字)を挿入 -->
+      <span class="ui big grey text" id="romajiInvalid1"><!-- 選択されなかった場合に文字を挿入 --></span>
       <span class="ui big green text" id="romajiComplete1"><!-- タイピング済の文字を挿入 --></span>
       <span class="ui big text" id="romajiUnComplete1"><!-- タイピングしてない文字を挿入 --></span>
       <!-- 枠線を挿入 -->
@@ -108,10 +111,12 @@
         <span class="ui purple massive text">OR</span>
       </div>
       <!-- 出題文章2(日本語)を挿入 -->
+      <span class="ui huge grey text" id="jpInvalid2"><!-- 選択されなかった場合に文字を挿入 --></span>
       <span class="ui huge green text" id="jpComplete2"><!-- タイピング済の文字を挿入 --></span>
       <span class="ui huge text" id="jpUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
       <div class="ui divider"></div>
       <!-- 出題文章2(ローマ字)を挿入 -->
+      <span class="ui big white text" id="romajiInvalid2"><!-- 選択されなかった場合に文字を挿入 --></span>
       <span class="ui big green text" id="romajiComplete2"><!-- タイピング済の文字を挿入 --></span>
       <span class="ui big text" id="romajiUnComplete2"><!-- タイピングしてない文字を挿入 --></span>
     </div>
@@ -765,11 +770,31 @@
     // 選択肢 1 が選択されたときの処理を実行する関数
     function processingSelect1(){
       isSelect1 = true
+      const boxProbSentence = document.querySelector("#box-prob-sentence")
+
+      // 未入力文字を一時的に複製
+      const jpUnComplete2 = boxProbSentence.querySelector("#jpUnComplete2")
+      const tempStr = jpUnComplete2.innerHTML
+      jpUnComplete2.innerHTML = ""
+
+      // 未入力文字を無効文字に変換
+      const jpInvalid2 = boxProbSentence.querySelector("#jpInvalid2")
+      jpInvalid2.innerHTML = tempStr
     }
 
     // 選択肢 2 が選択されたときの処理を実行する関数
     function processingSelect2(){
       isSelect2 = true
+      const boxProbSentence = document.querySelector("#box-prob-sentence")
+
+      // 未入力文字を一時的に複製
+      const jpUnComplete1 = boxProbSentence.querySelector("#jpUnComplete1")
+      const tempStr = jpUnComplete1.innerHTML
+      jpUnComplete1.innerHTML = ""
+
+      // 未入力文字を無効文字に変換
+      const jpInvalid1 = boxProbSentence.querySelector("#jpInvalid1")
+      jpInvalid1.innerHTML = tempStr
     }
     
     // ページをロードしたときに実行
