@@ -40,6 +40,9 @@
     <!-- スコア判定の指標(B ~ S ランクを取得するための要件一覧)を挿入 -->
     <div id="box-score-example"></div>
 
+    <!-- 起動時の画面を挿入 -->
+    <div id="box-starting-page"></div>
+
   </main>
 
   <template id="template-time-and-input-count">
@@ -149,15 +152,73 @@
     </div>
     <div class="ui hidden divider"></div>
   </template>
-
-  <!-- 効果音を実装したテンプレート。必要な効果音をJS側から参照するために使用 -->
-  <template id="template-sounds">
-    <audio class="miss-typing-sound">
-      <source src="./sounds/MissTypingSound.mp3" type="audio/mp3">
-    </audio>
-    <audio class="finish-sound">
-      <source src="./sounds/MissTypingSound.mp3" type="audio/mp3">
-    </audio>
+  
+  <!-- 起動時の画面と対応 -->
+  <template id="template-starting-page">
+    <div class="ui hidden divider"></div>
+    <div class="ui container">
+      <h1 class="ui center aligned header">
+        <div class="content">
+          タイピングゲームを開始するには ボタン を押してください
+        </div>
+      </h1>
+      <div class="ui hidden divider"></div>
+      <div class="ui center aligned grid">
+        <div class="ui animated fade button" tabindex="0">
+          <div class="visible content">
+            <font style="vertical-align: inherit;">
+              <font style="vertical-align: inherit;">
+                <span class="ui huge red text">
+                  <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">
+                      click to start
+                    </font>
+                  </font>
+                </span>
+              </font>
+            </font>
+          </div>
+          <div class="hidden content">
+              <font style="vertical-align: inherit;">
+                <font style="vertical-align: inherit;">
+                  <span class="ui large red text">
+                    <font style="vertical-align: inherit;">
+                      <font style="vertical-align: inherit;">
+                        ready...?
+                      </font>
+                    </font>
+                  </span>
+                </font>
+              </font>
+            </div>
+          </div>
+        </div>
+      <div class="ui hidden divider"></div>
+      <details class="ui accordion">
+        <summary class="title">
+          <i class="dropdown icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">このゲームのルールは？
+        </font></font></summary>
+        <div class="content">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">頑張れ！！！（肩ポン）</font></font></p>
+        </div>
+      </details>
+      <details class="ui accordion">
+        <summary class="title">
+          <i class="dropdown icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">どのように作られていますか？
+        </font></font></summary>
+        <div class="content">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">気合です。感じ取ってください。</font></font></p>
+        </div>
+      </details><details class="ui accordion">
+        <summary class="title">
+          <i class="dropdown icon"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">チーム名はなんですか？
+        </font></font></summary>
+        <div class="content">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">あああああああああああああああああああああああああああああああああああああああ</font></font></p>
+        </div>
+      </details>
+      <div class="ui hidden divider"></div>
+    </div>
   </template>
 
   <script>
@@ -444,30 +505,38 @@
 
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
-      /* 
-        localhost3000にアクセスしたときに実行される
-        何も記載していないので現状ではアクセスしただけだと何も表示されない
-        (htmlの<header><main>のみロードされる)
-      */
+      
+      /* localhost3000にアクセスしたときに実行される処理 */
+
+      // 起動時の画面を挿入
+      const boxStartingPage = document.querySelector("#box-starting-page")
+      const templateStartingPage = document.querySelector("#template-starting-page")
+      const cloneStartingPage = document.importNode(templateStartingPage.content, true)
+      boxStartingPage.innerHTML = ""
+      boxStartingPage.appendChild(cloneStartingPage)
+
     })
 
     // キーボード入力したときに実行
     document.addEventListener("keydown", (event) =>{
       var key = event.code
       if(key){
-        // Enter が入力されたらゲーム開始
-        if(key == "Enter" && !isStartGame){
-          createTypingScreen()
-          isStartGame = true
-          startTime = performance.now()
-          timerId = setInterval(() => calculateElapsedTime(startTime), 10);
-        }
-        // ゲームが既に開始しておりユーザーがタイピングしている状態なのでタイピング判定する
-        else{
-          checkInput(event.code[event.code.length-1])
-        }
+        // ユーザーがタイピングしている状態なのでタイピング判定する
+        checkInput(event.code[event.code.length-1])
       }
     })
+
+    // スタート画面にてボタンを押したときに実行
+    $(document).on("click", ".ui.button", function(){
+      createTypingScreen()
+      startTime = performance.now()
+      timerId = setInterval(() => calculateElapsedTime(startTime), 10);
+
+      // スタート画面を非表示にする処理
+      const boxStartingPage = document.querySelector("#box-starting-page")
+      boxStartingPage.innerHTML = ""
+    })
+
   </script>
 </body>
 </html>
