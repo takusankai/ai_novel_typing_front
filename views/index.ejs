@@ -39,6 +39,9 @@
     <!-- 経過時間,タイピングの正入力回数,誤入力回数を挿入 -->
     <div id="box-time-and-input-count"></div>
 
+    <!-- シナリオ名を挿入 -->
+    <div id="box-scenario"></div>
+
     <!-- 出題文章を挿入 -->
     <div id="box-prob-sentence"></div>
 
@@ -89,6 +92,17 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="ui hidden divider"></div>
+    <div class="ui hidden divider"></div>
+  </template>
+
+  <!-- box-scenario と対応-->
+  <template id="template-scenario">
+    <div class="ui container">
+      <span class="ui red large text" id="scenario-name"><!-- シナリオ名を挿入 --></span>
+      <div class="ui hidden divider"></div>
+      <span class="ui red large text" id="scenario-content"><!-- シナリオ内容を挿入 --></span>
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui hidden divider"></div>
@@ -365,6 +379,10 @@
     var isSelect1 = false
     var isSelect2 = false
 
+    // シナリオ名とタイトルを設定
+    var scenario_name = ""
+    var scenario_content = ""
+
 /*--------------- ↓ 関数 ↓ ---------------*/
 
     // 全出題文章の合計文字数を return する関数
@@ -378,6 +396,7 @@
 
     // タイピングゲームのUI画面を構成する
     function createTypingScreen(){
+      updatePrintScenario()
       updateProbSentence()
       generateBoxTypingCount()
     }
@@ -388,6 +407,23 @@
       const cloneRestartingButton = document.importNode(templateRestartingButton.content, true)
       boxRestartButton.innerHTML = ""
       boxRestartButton.appendChild(cloneRestartingButton)
+    }
+
+    // シナリオ名を挿入する関数
+    function updatePrintScenario(){
+      const boxScenario = document.querySelector("#box-scenario")
+        const templateScenario = document.querySelector("#template-scenario")
+        const cloneScenario = document.importNode(templateScenario.content, true)
+
+        console.log(templateScenario.innerHTML)
+        console.log(cloneScenario.innerHTML)
+        const scenarioName = cloneScenario.querySelector("#scenario-name")
+        const scenarioContent = cloneScenario.querySelector("#scenario-content")
+        
+        scenarioName.innerHTML = "シナリオ名 : " + scenario_name
+        scenarioContent.innerHTML = "シナリオ内容 : \n" + scenario_content
+        boxScenario.innerHTML = ""
+        boxScenario.appendChild(cloneScenario)
     }
 
     // 出題文章を表示する画面を作成する関数。 box-prob-sentence と対応。
@@ -529,6 +565,7 @@
             isSelect2 = false
             generateCorrectSound()
             updateUncompletedIndex()
+            updatePrintScenario()
             updateProbSentence()
             correctInputLen = 0
           }
@@ -791,6 +828,9 @@
         document.getElementById('output1').innerHTML = JSON.parse(data).シナリオ名 + "<br>" + JSON.parse(data).シナリオ内容;
         document.getElementById('output2').innerHTML = JSON.parse(data).選択肢1 + "<br>" + JSON.parse(data).選択肢2;
         document.getElementById('output3').innerHTML = JSON.parse(data).選択肢1_ローマ字 + "<br>" + JSON.parse(data).選択肢2_ローマ字;
+
+        scenario_name = JSON.parse(data).シナリオ名
+        scenario_content = JSON.parse(data).シナリオ内容
         
         // 新しい要素を追加
         const newItem1 = {jp: JSON.parse(data).選択肢1, romaji: JSON.parse(data).選択肢1_ローマ字.toUpperCase()}
