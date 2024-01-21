@@ -788,15 +788,14 @@
           return response.json();
       })
       .then(data => {
-        // 
         console.log(JSON.parse(data));
         document.getElementById('output1').innerHTML = JSON.parse(data).シナリオ名 + "<br>" + JSON.parse(data).シナリオ内容;
         document.getElementById('output2').innerHTML = JSON.parse(data).選択肢1 + "<br>" + JSON.parse(data).選択肢2;
         document.getElementById('output3').innerHTML = JSON.parse(data).選択肢1_ローマ字 + "<br>" + JSON.parse(data).選択肢2_ローマ字;
         
         // 新しい要素を追加
-        const newItem1 = {jp: JSON.parse(data).選択肢1, romaji: String(JSON.parse(data).選択肢1_ローマ字)}
-        const newItem2 = {jp: JSON.parse(data).選択肢2, romaji: JSON.parse(data).選択肢2_ローマ字};
+        const newItem1 = {jp: JSON.parse(data).選択肢1, romaji: JSON.parse(data).選択肢1_ローマ字.toUpperCase()}
+        const newItem2 = {jp: JSON.parse(data).選択肢2, romaji: JSON.parse(data).選択肢2_ローマ字.toUpperCase()};
         probList1.push(newItem1)
         probList2.push(newItem2)
         completedList1.push(false)
