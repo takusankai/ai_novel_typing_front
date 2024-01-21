@@ -762,6 +762,9 @@
       return hours + '時間 ' + minutes + '分 ' + seconds + '秒 ' + remainingMilliseconds + 'ミリ秒'
     }
     
+    let scenario = "船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？"
+    let choice = "海図を調べる"
+
     // GPTから生成した文章を取得する関数
     function getGeneratedSentence(){
       
@@ -772,7 +775,7 @@
       const url = 'http://localhost:5000/';
 
       // APIにリクエストを送信
-      let data = { key: "あなたは海賊船の一員として、伝説の宝を探しに出航しました。船長が指示を出します。" };
+      let data = { scenarioKey: scenario , choiceKey: choice};
       fetch(url, {
         method: 'POST',
         mode: 'cors',
@@ -803,6 +806,10 @@
         completedList2.push(false)
         console.log(probList1)
         console.log(probList2)
+
+        scenario = JSON.parse(data).シナリオ内容
+        choice = JSON.parse(data).選択肢1
+
       })
       .catch(error => {
         console.error('Error:', error);
