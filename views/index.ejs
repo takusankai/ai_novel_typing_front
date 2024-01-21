@@ -332,11 +332,11 @@
     */
     const completedList1 = [
       false, 
-      false
+      false,
     ]
     const completedList2 = [
       false, 
-      false
+      false,
     ]
 
     // 全出題文章の合計文字数を設定。スコア判定に使用。
@@ -540,6 +540,8 @@
         
         // タイピングミスした場合
         else{
+          console.log("選択肢1のタイピングミス : " + userInputSentence)
+
           // 効果音を鳴らす
           generateMissTypingSound()
 
@@ -604,6 +606,8 @@
         
         // タイピングミスした場合
         else{
+          console.log("選択肢2のタイピングミス : " + userInputSentence)
+
           // 効果音を鳴らす
           generateMissTypingSound()
 
@@ -789,6 +793,16 @@
         document.getElementById('output1').innerHTML = JSON.parse(data).シナリオ名 + "<br>" + JSON.parse(data).シナリオ内容;
         document.getElementById('output2').innerHTML = JSON.parse(data).選択肢1 + "<br>" + JSON.parse(data).選択肢2;
         document.getElementById('output3').innerHTML = JSON.parse(data).選択肢1_ローマ字 + "<br>" + JSON.parse(data).選択肢2_ローマ字;
+        
+        // 新しい要素を追加
+        const newItem1 = {jp: JSON.parse(data).選択肢1, romaji: String(JSON.parse(data).選択肢1_ローマ字)}
+        const newItem2 = {jp: JSON.parse(data).選択肢2, romaji: JSON.parse(data).選択肢2_ローマ字};
+        probList1.push(newItem1)
+        probList2.push(newItem2)
+        completedList1.push(false)
+        completedList2.push(false)
+        console.log(probList1)
+        console.log(probList2)
       })
       .catch(error => {
         console.error('Error:', error);
