@@ -592,6 +592,9 @@
 
     // 選択肢 2 に対応する checkInput
     function checkInputSelect2(userInputSentence){
+      // 正しくタイピングミスしたときの効果音を鳴らす
+      correctTypingSound()
+      
       // 出題文章を取得
       const uncompletedIndex = getUncompletedIndex()
 
