@@ -239,7 +239,10 @@
       
       <!-- GPTから生成した文章を表示する -->
       <div id="output1"></div>
+      <div class="ui hidden divider"></div>
       <div id="output2"></div>
+      <div class="ui hidden divider"></div>
+      <div id="output3"></div>
       <div class="ui hidden divider"></div>
       
     </div>
@@ -617,6 +620,7 @@
         console.log(JSON.parse(data));
         document.getElementById('output1').innerHTML = JSON.parse(data).シナリオ名 + "<br>" + JSON.parse(data).シナリオ内容;
         document.getElementById('output2').innerHTML = JSON.parse(data).選択肢1 + "<br>" + JSON.parse(data).選択肢2;
+        document.getElementById('output3').innerHTML = JSON.parse(data).選択肢1_ローマ字 + "<br>" + JSON.parse(data).選択肢2_ローマ字;
       })
       .catch(error => {
         console.error('Error:', error);
