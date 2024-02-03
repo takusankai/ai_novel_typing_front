@@ -407,6 +407,9 @@
     // 問題が生成されている状態を設定
     var isGPTGenerated = false
 
+    // 現在の問題数を設定
+    var sectionNumber = 1
+
 /*--------------- ↓ 関数 ↓ ---------------*/
 
     // 全出題文章の合計文字数を return する関数
@@ -838,12 +841,12 @@
     // let choice = "海図を調べる"
 
     // GPTから生成した文章を取得する関数
-    function getGeneratedSentence(scenario, choice){
+    function getGeneratedSentence(scenario, choice, sectionNumber){
       
       const url = 'http://localhost:5000/';
 
       // APIにリクエストを送信
-      let data = { scenarioKey: scenario , choiceKey: choice};
+      let data = { scenarioKey: scenario , choiceKey: choice, numberKey: sectionNumber};
       fetch(url, {
         method: 'POST',
         mode: 'cors',
@@ -872,18 +875,12 @@
         completedList2.push(false)
         console.log(probList1)
         console.log(probList2)
-
         isGPTGenerated = true
-
-        // scenario = JSON.parse(data).シナリオ内容
-        // choice = JSON.parse(data).選択肢1
-
       })
       .catch(error => {
         console.error('Error:', error);
         document.getElementById('output').textContent = error.toString();
       });
-
     }
 
     // 選択肢 1 が選択されたときの処理を実行する関数
@@ -955,14 +952,16 @@
         if (key === "1") {
           console.log("11111")
           processingSelect1()
-          getGeneratedSentence(scenario_content, probList1[probList1.length-1].jp)
+          sectionNumber += 1
+          getGeneratedSentence(scenario_content, probList1[probList1.length-1].jp, sectionNumber)
         }
 
         // 選択肢 2 を選択した場合
         else if(key == '2'){
           console.log("22222")
           processingSelect2()
-          getGeneratedSentence(scenario_content, probList2[probList2.length-1].jp)
+          sectionNumber += 1
+          getGeneratedSentence(scenario_content, probList2[probList2.length-1].jp, sectionNumber)
         }
       }
 
@@ -986,9 +985,9 @@
 
       // 両方に値が入力されている場合
       if(firstScenarioText && firstChoiceText){
-        getGeneratedSentence(firstScenarioText, firstChoiceText)
+        getGeneratedSentence(firstScenarioText, firstChoiceText, sectionNumber)
       }else{
-        getGeneratedSentence("船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？", "海図を調べる")
+        getGeneratedSentence("船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？", "海図を調べる", sectionNumber)
       }
 
       while(!isGPTGenerated){
