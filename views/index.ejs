@@ -100,9 +100,20 @@
   <!-- box-scenario と対応-->
   <template id="template-scenario">
     <div class="ui container">
-      <span class="ui red large text" id="scenario-name"><!-- シナリオ名を挿入 --></span>
-      <div class="ui hidden divider"></div>
-      <span class="ui red large text" id="scenario-content"><!-- シナリオ内容を挿入 --></span>
+      <div class="ui grid">
+        <div class="sixteen wide column">
+          <div class="ui raised segment">
+            <a class="ui big red ribbon label">シナリオ名</a>
+            <p></p>
+            <span class="ui big large brown text" id="scenario-name"><!-- シナリオ名を挿入 --></span>
+            <div class="ui hidden divider"></div>
+            <a class="ui big blue ribbon label">シナリオ内容</a>
+            <p></p>
+            <span class="ui large brown text" id="scenario-content"><!-- シナリオ内容を挿入 --></span>
+            <p></p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui hidden divider"></div>
@@ -433,8 +444,8 @@
         const scenarioName = cloneScenario.querySelector("#scenario-name")
         const scenarioContent = cloneScenario.querySelector("#scenario-content")
         
-        scenarioName.innerHTML = "シナリオ名 : " + scenario_name
-        scenarioContent.innerHTML = "シナリオ内容 : \n" + scenario_content
+        scenarioName.innerHTML = scenario_name
+        scenarioContent.innerHTML = scenario_content
         boxScenario.innerHTML = ""
         boxScenario.appendChild(cloneScenario)
     }
