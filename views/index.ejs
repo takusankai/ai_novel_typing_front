@@ -25,7 +25,7 @@
     <h1 class="ui center aligned header">
       <em data-emoji=":alien:" class="small"></em>
       <div class="content">
-        Typing Game
+        AI Novel Typing
         <div class="sub header">AI型タイピングゲーム</div>
       </div>
       <em data-emoji=":boar:" class="small"></em>
@@ -350,7 +350,7 @@
 
   <script>
 
-    // 現状では決め打ち。ChatGPTで生成した文章をこのリストに格納する
+    // ChatGPTで生成した文章をこのリストに格納する
     const probList1 = [
       //{jp: "流れ星を見ました", romaji: "NAGAREBOSIWOMIMASITA"}, 
     ]
@@ -540,7 +540,6 @@
         checkInputSelect2(userInputSentence)
       }
 
-      
     }
 
     // 選択肢 1 に対応する checkInput
@@ -751,7 +750,7 @@
       playingSound.pause()
     }
 
-    // 正しくタイピングミスしたときに効果音を鳴らす関数
+    // 正しくタイピングしたときに効果音を鳴らす関数
     function correctTypingSound(){
       const boxSounds = document.querySelector("#box-sounds")
       const correctTypingSound = boxSounds.querySelector("#correct-typing-sound")
