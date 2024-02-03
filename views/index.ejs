@@ -210,6 +210,12 @@
           タイピングゲームを開始するには ボタン を押してください
         </div>
       </h1>
+      <div id="first-scenario-text" class="ui input">
+        <input type="text" placeholder="最初の状況">
+      </div>
+      <div id="first-choice-text" class="ui input">
+        <input type="text" placeholder="それにどう対応する？">
+      </div>
       <div class="ui hidden divider"></div>
       
       <div id="startpage-start-button" class="ui center aligned grid">
@@ -387,6 +393,9 @@
     var scenario_name = ""
     var scenario_content = ""
 
+    // 問題が生成されている状態を設定
+    var isGPTGenerated = false
+
 /*--------------- ↓ 関数 ↓ ---------------*/
 
     // 全出題文章の合計文字数を return する関数
@@ -524,7 +533,7 @@
     }
 
     // 選択肢 1 に対応する checkInput
-    function checkInputSelect1(userInputSentence){
+    async function checkInputSelect1(userInputSentence){
 
       // 出題文章を取得
       const uncompletedIndex = getUncompletedIndex()
@@ -572,6 +581,12 @@
             updatePrintScenario()
             updateProbSentence()
             correctInputLen = 0
+
+            while(!isGPTGenerated){
+              await new Promise(r => setTimeout(r, 1000));
+              console.log("waiting")
+            }
+            isGPTGenerated = false
           }
         }
         
@@ -595,7 +610,7 @@
     }
 
     // 選択肢 2 に対応する checkInput
-    function checkInputSelect2(userInputSentence){
+    async function checkInputSelect2(userInputSentence){
       // 正しくタイピングミスしたときの効果音を鳴らす
       correctTypingSound()
       
@@ -641,6 +656,13 @@
             updateUncompletedIndex()
             updateProbSentence()
             correctInputLen = 0
+
+            // GPTの文章生成を待つ
+            while(!isGPTGenerated){
+              await new Promise(r => setTimeout(r, 1000));
+              console.log("waiting")
+            }
+            isGPTGenerated = false
           }
         }
         
@@ -828,7 +850,6 @@
       })
       .then(data => {
         console.log(JSON.parse(data));
-        
         scenario_name = JSON.parse(data).シナリオ名
         scenario_content = JSON.parse(data).シナリオ内容
         
@@ -841,6 +862,8 @@
         completedList2.push(false)
         console.log(probList1)
         console.log(probList2)
+
+        isGPTGenerated = true
 
         // scenario = JSON.parse(data).シナリオ内容
         // choice = JSON.parse(data).選択肢1
@@ -943,7 +966,27 @@
     })
 
     // スタート画面にてボタンを押したときに実行
-    $(document).on("click", "#startpage-start-button", function(){
+    $(document).on("click", "#startpage-start-button", async function(){
+
+      console.log("スタートボタンが押されました")
+
+      // first-scenario-text と first-choice-text に入力された文章を取得
+      const firstScenarioText = document.querySelector("#first-scenario-text").querySelector("input").value
+      const firstChoiceText = document.querySelector("#first-choice-text").querySelector("input").value
+
+      // 両方に値が入力されている場合
+      if(firstScenarioText && firstChoiceText){
+        getGeneratedSentence(firstScenarioText, firstChoiceText)
+      }else{
+        getGeneratedSentence("船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？", "海図を調べる")
+      }
+
+      while(!isGPTGenerated){
+        await new Promise(r => setTimeout(r, 1000));
+        console.log("waiting")
+      }
+      isGPTGenerated = false
+
       startPlayingSound()
       createTypingScreen()
       startTime = performance.now()
@@ -957,11 +1000,6 @@
     $(document).on("click", ".ui.button2", function(){
       //リスタートboxを空にする処理
       window.location.href = 'http://localhost:3000'; // ここに新しいページのURLを指定
-    })
-    
-    // スタート画面にてGPTボタンを押したときに実行
-    $(document).on("click", "#startpage-gpt-button", function(){
-      getGeneratedSentence("船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？", "海図を調べる")
     })
 
   </script>
