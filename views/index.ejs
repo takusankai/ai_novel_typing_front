@@ -801,17 +801,13 @@
 
       return hours + '時間 ' + minutes + '分 ' + seconds + '秒 ' + remainingMilliseconds + 'ミリ秒'
     }
-    
-    let scenario = "船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？"
-    let choice = "海図を調べる"
+
+    // let scenario = "船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？"
+    // let choice = "海図を調べる"
 
     // GPTから生成した文章を取得する関数
-    function getGeneratedSentence(){
+    function getGeneratedSentence(scenario, choice){
       
-      // 関数が呼び出された直後は、テキストの内容を「wait」にする
-      document.getElementById('output1').textContent = 'wait...';
-      document.getElementById('output2').textContent = 'wait...';
-
       const url = 'http://localhost:5000/';
 
       // APIにリクエストを送信
@@ -832,10 +828,7 @@
       })
       .then(data => {
         console.log(JSON.parse(data));
-        document.getElementById('output1').innerHTML = JSON.parse(data).シナリオ名 + "<br>" + JSON.parse(data).シナリオ内容;
-        document.getElementById('output2').innerHTML = JSON.parse(data).選択肢1 + "<br>" + JSON.parse(data).選択肢2;
-        document.getElementById('output3').innerHTML = JSON.parse(data).選択肢1_ローマ字 + "<br>" + JSON.parse(data).選択肢2_ローマ字;
-
+        
         scenario_name = JSON.parse(data).シナリオ名
         scenario_content = JSON.parse(data).シナリオ内容
         
@@ -849,8 +842,8 @@
         console.log(probList1)
         console.log(probList2)
 
-        scenario = JSON.parse(data).シナリオ内容
-        choice = JSON.parse(data).選択肢1
+        // scenario = JSON.parse(data).シナリオ内容
+        // choice = JSON.parse(data).選択肢1
 
       })
       .catch(error => {
@@ -929,12 +922,14 @@
         if (key === "1") {
           console.log("11111")
           processingSelect1()
+          getGeneratedSentence(scenario_content, probList1[probList1.length-1].jp)
         }
 
         // 選択肢 2 を選択した場合
         else if(key == '2'){
           console.log("22222")
           processingSelect2()
+          getGeneratedSentence(scenario_content, probList2[probList2.length-1].jp)
         }
       }
 
@@ -966,7 +961,7 @@
     
     // スタート画面にてGPTボタンを押したときに実行
     $(document).on("click", "#startpage-gpt-button", function(){
-      getGeneratedSentence()
+      getGeneratedSentence("船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？", "海図を調べる")
     })
 
   </script>
