@@ -364,10 +364,10 @@
       初期値はfalse
     */
     const completedList1 = [
-      //false, 
+      false, 
     ]
     const completedList2 = [
-      //false, 
+      false, 
     ]
 
     // 全出題文章の合計文字数を設定。スコア判定に使用。
@@ -444,9 +444,6 @@
       const boxScenario = document.querySelector("#box-scenario")
         const templateScenario = document.querySelector("#template-scenario")
         const cloneScenario = document.importNode(templateScenario.content, true)
-
-        console.log(templateScenario.innerHTML)
-        console.log(cloneScenario.innerHTML)
         const scenarioName = cloneScenario.querySelector("#scenario-name")
         const scenarioContent = cloneScenario.querySelector("#scenario-content")
         
@@ -870,8 +867,14 @@
         scenario_content = JSON.parse(data).シナリオ内容
         
         // 新しい要素を追加
-        let newItem1 = {jp: JSON.parse(data).選択肢1, romaji: JSON.parse(data).選択肢1_ローマ字.toUpperCase()}
-        let newItem2 = {jp: JSON.parse(data).選択肢2, romaji: JSON.parse(data).選択肢2_ローマ字.toUpperCase()};
+        let newItem1 = {
+          jp: JSON.parse(data).選択肢1,
+          romaji: JSON.parse(data).選択肢1_ローマ字.toUpperCase().replace(/、/g, ",").replace(/。/g, ".")
+        }
+        let newItem2 = {
+          jp: JSON.parse(data).選択肢2,
+          romaji: JSON.parse(data).選択肢2_ローマ字.toUpperCase().replace(/、/g, ",").replace(/。/g, ".")
+        }
         probList1.push(newItem1)
         probList2.push(newItem2)
         completedList1.push(false)
@@ -972,7 +975,6 @@
       else{
         // ユーザーがタイピングしている状態なのでタイピング判定する
         if(isSelect1 || isSelect2){
-          //checkInput(event.code[event.code.length-1])
           checkInput(key)
         }
       }
