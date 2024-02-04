@@ -410,6 +410,9 @@
     // 現在の問題数を設定
     var sectionNumber = 1
 
+    // 出題数を5問に設定
+    let maxSectionNumber = 5
+
 /*--------------- ↓ 関数 ↓ ---------------*/
 
     // 全出題文章の合計文字数を return する関数
@@ -462,8 +465,8 @@
       // 出題する文章が存在するか参照
       const uncompletedIndex = getUncompletedIndex()
 
-      // 出題する文章が残っている場合
-      if(uncompletedIndex != -1){
+      // 出題数が5問未満で、出題する文章が残っている場合
+      if( (sectionNumber <= maxSectionNumber) &&  (uncompletedIndex != -1) ){
         const templateProbSentence = document.querySelector("#template-prob-sentence")
         const cloneProbSentence = document.importNode(templateProbSentence.content, true)
         
@@ -867,8 +870,8 @@
         scenario_content = JSON.parse(data).シナリオ内容
         
         // 新しい要素を追加
-        const newItem1 = {jp: JSON.parse(data).選択肢1, romaji: JSON.parse(data).選択肢1_ローマ字.toUpperCase()}
-        const newItem2 = {jp: JSON.parse(data).選択肢2, romaji: JSON.parse(data).選択肢2_ローマ字.toUpperCase()};
+        let newItem1 = {jp: JSON.parse(data).選択肢1, romaji: JSON.parse(data).選択肢1_ローマ字.toUpperCase()}
+        let newItem2 = {jp: JSON.parse(data).選択肢2, romaji: JSON.parse(data).選択肢2_ローマ字.toUpperCase()};
         probList1.push(newItem1)
         probList2.push(newItem2)
         completedList1.push(false)
@@ -969,7 +972,8 @@
       else{
         // ユーザーがタイピングしている状態なのでタイピング判定する
         if(isSelect1 || isSelect2){
-          checkInput(event.code[event.code.length-1])
+          //checkInput(event.code[event.code.length-1])
+          checkInput(key)
         }
       }
     })
