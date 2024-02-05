@@ -60,6 +60,9 @@
     <!-- 効果音を挿入 -->
     <div id="box-sounds"></div>
 
+    <!-- ロード画面を挿入 -->
+    <div id = "box-loader"></div>
+
   </main>
 
   <!-- box-time-and-input-count と対応 -->
@@ -348,6 +351,15 @@
     </div>
   </template>
 
+  <template id = "template-loader">
+    <div class="ui basic massive segment">
+      <em data-emoji="angel" class="loading"></em>
+      <em data-emoji="blush" class="loading"></em>
+      <em data-emoji="grin" class="loading"></em>
+      <span>Loading Next Sentence . . .</span>
+    </div>
+  </template>
+
   <script>
 
     // ChatGPTで生成した文章をこのリストに格納する
@@ -593,6 +605,7 @@
             updateUncompletedIndex()
             updatePrintScenario()
             correctInputLen = 0
+            createLoader()
 
             // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
@@ -600,6 +613,7 @@
               console.log("waiting")
             }
             isGPTGenerated = false
+            deleteLoader()
             updateProbSentence()
           }
         }
@@ -669,6 +683,7 @@
             generateCorrectSound()
             updateUncompletedIndex()
             correctInputLen = 0
+            createLoader()
 
             // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
@@ -676,6 +691,7 @@
               console.log("waiting")
             }
             isGPTGenerated = false
+            deleteLoader()
             updateProbSentence()
           }
         }
@@ -930,6 +946,21 @@
       romajiInvalid1.innerHTML = tempRomaji
     }
 
+    // ロード画面を挿入する関数
+    function createLoader(){
+      const boxLoader = document.querySelector("#box-loader")
+      const templateLoader = document.querySelector("#template-loader")
+      const cloneLoader = document.importNode(templateLoader.content, true)
+      boxLoader.innerHTML = ""
+      boxLoader.appendChild(cloneLoader)
+    }
+
+    // ロード画面を削除する関数
+    function deleteLoader(){
+      const boxLoader = document.querySelector("#box-loader")
+      boxLoader.innerHTML = ""
+    }
+
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
 
@@ -997,11 +1028,17 @@
         getGeneratedSentence("船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？", "海図を調べる", sectionNumber)
       }
 
+      // ロード画面を挿入
+      createLoader()
+
       //問題文の生成を待つ
       while(!isGPTGenerated){
         await new Promise(r => setTimeout(r, 1000));
         console.log("waiting")
       }
+
+      // ロード画面を削除
+      deleteLoader()
       isGPTGenerated = false
       startPlayingSound()
       createTypingScreen()
