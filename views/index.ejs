@@ -759,6 +759,10 @@
       const boxEnding = document.querySelector("#box-ending")
       const templateEnding = document.querySelector("#template-ending")
       const cloneEnding = document.importNode(templateEnding.content, true)
+      const endingName = cloneEnding.querySelector("#ending-name")
+      const endingContent = cloneEnding.querySelector("#ending-content")
+      endingName.innerHTML = "ああああ"
+      endingContent.innerHTML = "いいいい"
       boxEnding.innerHTML = ""
       boxEnding.appendChild(cloneEnding)
 
