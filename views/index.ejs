@@ -761,8 +761,8 @@
       const cloneEnding = document.importNode(templateEnding.content, true)
       const endingName = cloneEnding.querySelector("#ending-name")
       const endingContent = cloneEnding.querySelector("#ending-content")
-      endingName.innerHTML = "ああああ"
-      endingContent.innerHTML = "いいいい"
+      endingName.innerHTML = probList1[probList1.length-1].jp + "//////" + scenario_name
+      endingContent.innerHTML = probList2[probList1.length-1].jp + "//////" + scenario_content
       boxEnding.innerHTML = ""
       boxEnding.appendChild(cloneEnding)
 
