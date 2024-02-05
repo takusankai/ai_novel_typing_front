@@ -163,11 +163,11 @@
       <div class="ui grid">
         <div class="sixteen wide column">
           <div class="ui raised segment">
-            <a class="ui big red ribbon label">クリア</a>
+            <a class="ui big red ribbon label">シナリオ名</a>
             <p></p>
             <span class="ui big large brown text" id="ending-name"><!-- シナリオ名を挿入 --></span>
             <div class="ui hidden divider"></div>
-            <a class="ui big blue ribbon label">結末</a>
+            <a class="ui big blue ribbon label">シナリオ内容</a>
             <p></p>
             <span class="ui large brown text" id="ending-content"><!-- シナリオ内容を挿入 --></span>
             <p></p>
@@ -761,8 +761,8 @@
       const cloneEnding = document.importNode(templateEnding.content, true)
       const endingName = cloneEnding.querySelector("#ending-name")
       const endingContent = cloneEnding.querySelector("#ending-content")
-      endingName.innerHTML = probList1[probList1.length-1].jp + "//////" + scenario_name
-      endingContent.innerHTML = probList2[probList1.length-1].jp + "//////" + scenario_content
+      endingName.innerHTML = scenario_name
+      endingContent.innerHTML = scenario_content
       boxEnding.innerHTML = ""
       boxEnding.appendChild(cloneEnding)
 
