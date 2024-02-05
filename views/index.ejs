@@ -625,14 +625,16 @@
 
           // 出題文章を全て正しく入力した場合は、正解の効果音を鳴らして次の文章を出題
           if(sentenceRomajiSize == correctInputLen){
+
             isSelect1 = false
             isSelect2 = false
+
             generateCorrectSound()
             updateUncompletedIndex()
             updatePrintScenario()
             correctInputLen = 0
-            createLoader()
 
+            createLoader()
             // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
             await new Promise(r => setTimeout(r, 1000));
@@ -704,13 +706,15 @@
 
           // 出題文章を全て正しく入力した場合は、正解の効果音を鳴らして次の文章を出題
           if(sentenceRomajiSize == correctInputLen){
+
             isSelect1 = false
             isSelect2 = false
+
             generateCorrectSound()
             updateUncompletedIndex()
             correctInputLen = 0
-            createLoader()
 
+            createLoader()
             // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
             await new Promise(r => setTimeout(r, 1000));
