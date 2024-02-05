@@ -860,7 +860,8 @@
     // GPTから生成した文章を取得する関数
     function getGeneratedSentence(scenario, choice, sectionNumber){
       
-      const url = 'http://localhost:5000/';
+      const url = 'https://ai-novel-typing-api.fly.dev/';
+      // const url = 'http://localhost:5000/';
 
       // APIにリクエストを送信
       let data = { scenarioKey: scenario , choiceKey: choice, numberKey: sectionNumber};
