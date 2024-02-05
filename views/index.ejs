@@ -592,14 +592,15 @@
             generateCorrectSound()
             updateUncompletedIndex()
             updatePrintScenario()
-            updateProbSentence()
             correctInputLen = 0
 
+            // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
-              await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 1000));
               console.log("waiting")
             }
             isGPTGenerated = false
+            updateProbSentence()
           }
         }
         
@@ -667,15 +668,15 @@
             isSelect2 = false
             generateCorrectSound()
             updateUncompletedIndex()
-            updateProbSentence()
             correctInputLen = 0
 
-            // GPTの文章生成を待つ
+            // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
-              await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 1000));
               console.log("waiting")
             }
             isGPTGenerated = false
+            updateProbSentence()
           }
         }
         
@@ -928,7 +929,7 @@
       jpInvalid1.innerHTML = tempJp
       romajiInvalid1.innerHTML = tempRomaji
     }
-    
+
     // ページをロードしたときに実行
     document.addEventListener("DOMContentLoaded", () => {
 
@@ -996,12 +997,12 @@
         getGeneratedSentence("船長はあなたに、宝の在り処を探すように指示します。どの方法で探しますか？", "海図を調べる", sectionNumber)
       }
 
+      //問題文の生成を待つ
       while(!isGPTGenerated){
         await new Promise(r => setTimeout(r, 1000));
         console.log("waiting")
       }
       isGPTGenerated = false
-
       startPlayingSound()
       createTypingScreen()
       startTime = performance.now()
