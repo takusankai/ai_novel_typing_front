@@ -909,7 +909,7 @@
     // GPTから生成した文章を取得する関数
     function getGeneratedSentence(scenario, choice, sectionNumber){
       
-      const url = 'http://localhost:5000/';
+      const url = 'https://ai-novel-typing-api.fly.dev/';
 
       // APIにリクエストを送信
       let data = { scenarioKey: scenario , choiceKey: choice, numberKey: sectionNumber};
@@ -1101,7 +1101,7 @@
 
     $(document).on("click", ".ui.button2", function(){
       //リスタートboxを空にする処理
-      window.location.href = 'http://localhost:3000'; // ここに新しいページのURLを指定
+      window.location.href = 'https://nytsdayo.github.io/ai_novel_typing/'; // ここに新しいページのURLを指定
     })
 
   </script>
