@@ -45,6 +45,9 @@
     <!-- 出題文章を挿入 -->
     <div id="box-prob-sentence"></div>
 
+    <!-- エンディング画面を挿入 -->
+    <div id="box-ending"></div>
+
     <!-- タイピング結果を挿入 -->
     <div id="box-check-result"></div>
 
@@ -150,6 +153,28 @@
     </div>
     <div class="ui hidden divider"></div>
     <div class="ui hidden divider"></div>
+    <div class="ui hidden divider"></div>
+    <div class="ui hidden divider"></div>
+  </template>
+
+  <!-- box-ending と対応-->
+  <template id="template-ending">
+    <div class="ui container">
+      <div class="ui grid">
+        <div class="sixteen wide column">
+          <div class="ui raised segment">
+            <a class="ui big red ribbon label">シナリオ名</a>
+            <p></p>
+            <span class="ui big large brown text" id="ending-name"><!-- シナリオ名を挿入 --></span>
+            <div class="ui hidden divider"></div>
+            <a class="ui big blue ribbon label">シナリオ内容</a>
+            <p></p>
+            <span class="ui large brown text" id="ending-content"><!-- シナリオ内容を挿入 --></span>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="ui hidden divider"></div>
     <div class="ui hidden divider"></div>
   </template>
@@ -351,6 +376,7 @@
     </div>
   </template>
 
+  <!-- box-loader と対応 -->
   <template id = "template-loader">
     <div class="ui basic massive segment">
       <em data-emoji="angel" class="loading"></em>
@@ -599,21 +625,23 @@
 
           // 出題文章を全て正しく入力した場合は、正解の効果音を鳴らして次の文章を出題
           if(sentenceRomajiSize == correctInputLen){
+
             isSelect1 = false
             isSelect2 = false
+
             generateCorrectSound()
             updateUncompletedIndex()
             updatePrintScenario()
             correctInputLen = 0
-            createLoader()
 
+            createLoader()
             // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
             await new Promise(r => setTimeout(r, 1000));
               console.log("waiting")
             }
             isGPTGenerated = false
-            deleteLoader()
+            clearLoader()
             updateProbSentence()
           }
         }
@@ -678,20 +706,22 @@
 
           // 出題文章を全て正しく入力した場合は、正解の効果音を鳴らして次の文章を出題
           if(sentenceRomajiSize == correctInputLen){
+
             isSelect1 = false
             isSelect2 = false
+
             generateCorrectSound()
             updateUncompletedIndex()
             correctInputLen = 0
-            createLoader()
 
+            createLoader()
             // updateProbSentenceだけは問題文の生成を待たないとエラーとなる
             while(!isGPTGenerated){
             await new Promise(r => setTimeout(r, 1000));
               console.log("waiting")
             }
             isGPTGenerated = false
-            deleteLoader()
+            clearLoader()
             updateProbSentence()
           }
         }
@@ -720,6 +750,25 @@
 
       // タイピングゲーム中に流れている BGM を停止
       stopPlaySound()
+
+      // シナリオ画面を削除
+      const boxScenario = document.querySelector("#box-scenario")
+      boxScenario.innerHTML = ""
+
+      // タイピング画面を削除
+      const boxProbSentence = document.querySelector("#box-prob-sentence")
+      boxProbSentence.innerHTML = ""
+
+      // エンディング画面を追加
+      const boxEnding = document.querySelector("#box-ending")
+      const templateEnding = document.querySelector("#template-ending")
+      const cloneEnding = document.importNode(templateEnding.content, true)
+      const endingName = cloneEnding.querySelector("#ending-name")
+      const endingContent = cloneEnding.querySelector("#ending-content")
+      endingName.innerHTML = scenario_name
+      endingContent.innerHTML = scenario_content
+      boxEnding.innerHTML = ""
+      boxEnding.appendChild(cloneEnding)
 
       // 終了を示す効果音を鳴らす
       generateFinishSound()
@@ -860,8 +909,7 @@
     // GPTから生成した文章を取得する関数
     function getGeneratedSentence(scenario, choice, sectionNumber){
       
-      const url = 'https://ai-novel-typing-api.fly.dev/';
-      // const url = 'http://localhost:5000/';
+      const url = 'http://localhost:5000/';
 
       // APIにリクエストを送信
       let data = { scenarioKey: scenario , choiceKey: choice, numberKey: sectionNumber};
@@ -957,7 +1005,7 @@
     }
 
     // ロード画面を削除する関数
-    function deleteLoader(){
+    function clearLoader(){
       const boxLoader = document.querySelector("#box-loader")
       boxLoader.innerHTML = ""
     }
@@ -1039,7 +1087,7 @@
       }
 
       // ロード画面を削除
-      deleteLoader()
+      clearLoader()
       isGPTGenerated = false
       startPlayingSound()
       createTypingScreen()
